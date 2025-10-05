@@ -11,3 +11,5 @@ obj/
 
 screenshots/
 
+/PolkadotRoots/Platforms/Android/google-services.json
+/PolkadotRoots/GoogleService-Info.plist

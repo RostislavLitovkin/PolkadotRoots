@@ -1,4 +1,5 @@
 ﻿using PlutoFramework.Model;
+using PlutoFramework.Model.Initializers;
 using PolkadotRoots.Components.BottomNavBar;
 
 namespace PolkadotRoots
@@ -100,6 +101,14 @@ namespace PolkadotRoots
             {
                 window.Page = page;
             }
+        }
+
+        protected override void OnStart()
+        {
+            // Launch push notifications services
+            PushNotificationsAppInitializer.Initialize(
+                "https://notifications-api.plutolabs.app"
+            );
         }
     }
 }
