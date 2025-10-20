@@ -52,6 +52,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\CommunityCore\CommunityCore.csproj" />
 	  <ProjectReference Include="..\PlutoFramework\PlutoFramework\PlutoFramework.csproj" />
 	</ItemGroup>
 
