@@ -2,7 +2,7 @@
 
 namespace CommunityCore.Users
 {
-    public sealed class UserDto
+    public sealed class UserDto : IScaleEncodable
     {
         [JsonPropertyName("address")]
         public required string Address { get; set; }
@@ -23,5 +23,16 @@ namespace CommunityCore.Users
         public List<string> Roles { get; set; } = [];
 
         public string FullName => $"{FirstName} {LastName}";
+
+        public byte[] Encode()
+        {
+            return [
+                .. Helpers.ScaleEncodeString(Address),
+                .. FirstName is not null ? Helpers.ScaleEncodeString(FirstName) : [],
+                .. LastName is not null ? Helpers.ScaleEncodeString(LastName) : [],
+                .. ProfilePicture is not null ? Helpers.ScaleEncodeString(ProfilePicture) : [],
+                .. Description is not null ? Helpers.ScaleEncodeString(Description) : [],
+            ];
+        }
     }
 }

@@ -1,4 +1,6 @@
-﻿using System.Net;
+﻿using Substrate.NetApi;
+using System.Net;
+using System.Text;
 using System.Text.Json;
 
 namespace CommunityCore
@@ -27,11 +29,16 @@ namespace CommunityCore
                 throw new CommunityApiException("Failed to deserialize response.", resp.StatusCode, payload, jx);
             }
         }
-
         internal static async Task<CommunityApiException> CreateApiExceptionAsync(HttpResponseMessage resp)
         {
             var body = resp.Content is null ? null : await resp.Content.ReadAsStringAsync().ConfigureAwait(false);
             return new CommunityApiException($"HTTP {(int)resp.StatusCode} {resp.ReasonPhrase}", resp.StatusCode, body);
+        }
+
+        internal static byte[] ScaleEncodeString(string str)
+        {
+            byte[] encoded = Encoding.UTF8.GetBytes(str);
+            return [.. new CompactInteger(encoded.Count()).Encode(), .. encoded];
         }
     }
 }

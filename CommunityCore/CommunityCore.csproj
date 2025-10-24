@@ -6,4 +6,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Substrate.NET.Wallet" Version="1.0.8" />
+  </ItemGroup>
 </Project>
