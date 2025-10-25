@@ -16,7 +16,7 @@ namespace CommunityTests
             var httpClient = new HttpClient();
             var options = new CommunityApiOptions
             {
-                BaseAddress = new Uri("https://community.plutolabs.app")
+                BaseAddress = new Uri("https://localhost:8080")
             };
 
             client = new CommunityEventsApiClient(httpClient, options);
