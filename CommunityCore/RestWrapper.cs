@@ -30,7 +30,14 @@ namespace CommunityCore
                 .. Value.Encode()
             ];
 
+            Console.WriteLine("Encoded: ");
+            Console.WriteLine(Utils.Bytes2HexString(encoded));
+
+
             var hash = HashExtension.Blake2(encoded, 128);
+
+            Console.WriteLine("hash: ");
+            Console.WriteLine(Utils.Bytes2HexString(hash));
 
             var signature = account.Sign(hash);
 
