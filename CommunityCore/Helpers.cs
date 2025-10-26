@@ -17,6 +17,9 @@ namespace CommunityCore
                 throw await CreateApiExceptionAsync(resp).ConfigureAwait(false);
 
             var payload = await resp.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+            Console.WriteLine(payload);
+
             try
             {
                 var value = JsonSerializer.Deserialize<T>(payload, CommunityApiOptions.SerializerOptions);

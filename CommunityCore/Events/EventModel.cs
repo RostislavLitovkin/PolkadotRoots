@@ -22,12 +22,32 @@ namespace CommunityCore.Events
                 http.BaseAddress = this.options.BaseAddress;
         }
 
-        // GET /api/events/
-        public async Task<IReadOnlyList<EventDto>> GetAllAsync(CancellationToken ct = default)
+        // GET /api/events/ - paged with optional filters
+        public async Task<PageDto<EventDto>> GetPageAsync(int page = 0, int size = 20, bool? hasEnded = null, string? country = null, CancellationToken ct = default)
         {
-            using var resp = await http.GetAsync($"{BASEPATH}/", ct).ConfigureAwait(false);
-            return await Helpers.ReadOrThrowAsync<List<EventDto>>(resp).ConfigureAwait(false);
+            var qp = new List<string>
+            {
+                $"page={page}",
+                $"size={size}"
+            };
+            if (hasEnded is not null) qp.Add($"hasEnded={(hasEnded.Value ? "true" : "false")}");
+            if (!string.IsNullOrWhiteSpace(country)) qp.Add($"country={Uri.EscapeDataString(country)}");
+
+            var url = $"{BASEPATH}/?{string.Join("&", qp)}";
+            using var resp = await http.GetAsync(url, ct).ConfigureAwait(false);
+            return await Helpers.ReadOrThrowAsync<PageDto<EventDto>>(resp).ConfigureAwait(false);
         }
+
+        // Convenience for callers that just want first page content
+        public async Task<IReadOnlyList<EventDto>> GetAllAsync(bool? hasEnded = null, string? country = null, CancellationToken ct = default)
+        {
+            var page = await GetPageAsync(page: 0, size: 20, hasEnded: hasEnded, country: country, ct: ct).ConfigureAwait(false);
+            return page.Content;
+        }
+
+        // Back-compat overload for previous signature where only CancellationToken was provided
+        public Task<IReadOnlyList<EventDto>> GetAllAsync(CancellationToken ct)
+            => GetAllAsync(hasEnded: null, country: null, ct);
 
         // GET /api/events/{id}
         public async Task<EventDto?> GetAsync(long id, CancellationToken ct = default)

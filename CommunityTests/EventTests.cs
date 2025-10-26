@@ -35,6 +35,121 @@ namespace CommunityTests
         }
 
         [Test]
+        public async Task ListEventsPagedWithFiltersAsync()
+        {
+            var testCountry = $"TEST";
+            var createdIds = new List<long>();
+
+            try
+            {
+                // Create 3 events under same unique country to test paging deterministically
+                for (int i = 0; i < 3; i++)
+                {
+                    var created = await client.CreateAsync(
+                        admin,
+                        new EventDto
+                        {
+                            OrganizatorAddresses = [admin.Value],
+                            Name = $"Paged Event {i}",
+                            Description = "Paged events test",
+                            Country = testCountry,
+                            Address = "Test Café",
+                            Image = "test/communityimage.png",
+                            Price = "FREE with App",
+                            MapsUrl = "https://maps.app.goo.gl/awTVBhDe2czcHCy6A",
+                            LumaUrl = "https://luma.com/91yecn2o",
+                            Website = "https://community.plutolabs.app/",
+                            Capacity = 10,
+                            TimeStart = DateTimeOffset.UtcNow.AddDays(1).ToUnixTimeSeconds(),
+                            TimeEnd = DateTimeOffset.UtcNow.AddDays(1).AddHours(2).ToUnixTimeSeconds(),
+                        });
+                    createdIds.Add(created.Id!.Value);
+                }
+
+                var page0 = await client.GetPageAsync(page: 0, size: 2, hasEnded: null, country: testCountry);
+                Assert.That(page0.Content.Count, Is.LessThanOrEqualTo(2));
+                Assert.That(page0.TotalElements, Is.GreaterThanOrEqualTo(3));
+                Assert.That(page0.Number, Is.EqualTo(0));
+
+                var page1 = await client.GetPageAsync(page: 1, size: 2, hasEnded: null, country: testCountry);
+                Assert.That(page1.Number, Is.EqualTo(1));
+                // second page should contain the remainder (at least 1 item)
+                Assert.That(page1.Content.Count, Is.GreaterThanOrEqualTo(1));
+            }
+            finally
+            {
+                foreach (var id in createdIds)
+                {
+                    await client.DeleteAsync(admin, id);
+                }
+            }
+        }
+
+        [Test]
+        public async Task FilterEventsByHasEndedAsync()
+        {
+            var testCountry = "TEST";
+            EventDto ended = null!;
+            EventDto upcoming = null!;
+
+            try
+            {
+                // Ended event (past)
+                ended = await client.CreateAsync(
+                    admin,
+                    new EventDto
+                    {
+                        OrganizatorAddresses = [admin.Value],
+                        Name = "Ended Event",
+                        Description = "Ended",
+                        Country = testCountry,
+                        Image = "test/communityimage.png",
+                        Price = "FREE with App",
+                        Address = "Test Café 16, Prague, 120 00",
+                        MapsUrl = "https://maps.app.goo.gl/awTVBhDe2czcHCy6A",
+                        LumaUrl = "https://luma.com/91yecn2o",
+                        Website = "https://community.plutolabs.app/",
+                        Capacity = 5,
+                        TimeStart = DateTimeOffset.UtcNow.AddHours(-10).ToUnixTimeSeconds(),
+                        TimeEnd = DateTimeOffset.UtcNow.AddHours(-8).ToUnixTimeSeconds(),
+                    });
+
+                // Upcoming event (future)
+                upcoming = await client.CreateAsync(
+                    admin,
+                    new EventDto
+                    {
+                        OrganizatorAddresses = [admin.Value],
+                        Name = "Upcoming Event",
+                        Description = "Upcoming",
+                        Country = testCountry,
+                        Image = "test/communityimage.png",
+                        Price = "FREE with App",
+                        Address = "Test Café 16, Prague, 120 00",
+                        MapsUrl = "https://maps.app.goo.gl/awTVBhDe2czcHCy6A",
+                        LumaUrl = "https://luma.com/91yecn2o",
+                        Website = "https://community.plutolabs.app/",
+                        Capacity = 5,
+                        TimeStart = DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeSeconds(),
+                        TimeEnd = DateTimeOffset.UtcNow.AddHours(2).ToUnixTimeSeconds(),
+                    });
+
+                var endedList = await client.GetAllAsync(hasEnded: true, country: testCountry);
+                Assert.That(endedList.Any(e => e.Id == ended.Id), "Ended event should be returned when hasEnded=true");
+                Assert.That(!endedList.Any(e => e.Id == upcoming.Id), "Upcoming event should not be returned when hasEnded=true");
+
+                var upcomingList = await client.GetAllAsync(hasEnded: false, country: testCountry);
+                Assert.That(upcomingList.Any(e => e.Id == upcoming.Id), "Upcoming event should be returned when hasEnded=false");
+                Assert.That(!upcomingList.Any(e => e.Id == ended.Id), "Ended event should not be returned when hasEnded=false");
+            }
+            finally
+            {
+                if (ended?.Id is long id1) await client.DeleteAsync(admin, id1);
+                if (upcoming?.Id is long id2) await client.DeleteAsync(admin, id2);
+            }
+        }
+
+        [Test]
         public async Task CreateEventAsync()
         {
             EventDto created = await client.CreateAsync(
