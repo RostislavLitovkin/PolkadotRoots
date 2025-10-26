@@ -16,7 +16,7 @@ namespace CommunityTests
             var httpClient = new HttpClient();
             var options = new CommunityApiOptions
             {
-                BaseAddress = new Uri("https://localhost:8080")
+                BaseAddress = new Uri("http://localhost:8080")
             };
 
             client = new CommunityEventsApiClient(httpClient, options);
@@ -58,7 +58,6 @@ namespace CommunityTests
 
             Assert.That(created.Id.HasValue, "Created event must have an Id");
             Console.WriteLine($"Created event: {created.Id} - {created.Name}");
-
         }
 
         [Test]
