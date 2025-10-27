@@ -15,7 +15,7 @@
         Route="Assets" />
 
     <ShellContent
-        ContentTemplate="{DataTemplate pages:WudPage}"
-        Route="Wud" />
+        ContentTemplate="{DataTemplate pages:EventsPage}"
+        Route="Events" />
 
 </Shell>

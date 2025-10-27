@@ -51,7 +51,7 @@ namespace CommunityCore.Storage
             return await Helpers.ReadOrThrowAsync<StorageUploadDto>(resp).ConfigureAwait(false);
         }
 
-        public async Task<string> GetImageAsync(
+        public Task<string> GetImageAsync(
             string fileName,
             string folder,
             CancellationToken ct = default)
@@ -63,6 +63,12 @@ namespace CommunityCore.Storage
 
             var key = $"{folder}/{fileName}";
 
+            return GetImageAsync(key, ct);
+        }
+        public async Task<string> GetImageAsync(
+            string key,
+            CancellationToken ct = default)
+        {
             using var resp = await http.GetAsync($"{BASEPATH}/image?key={Uri.EscapeDataString(key)}", ct).ConfigureAwait(false);
 
             if (resp.StatusCode != HttpStatusCode.OK)

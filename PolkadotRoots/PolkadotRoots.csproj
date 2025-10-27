@@ -71,9 +71,6 @@
     <Compile Update="Components\BottomNavBar\NavBarButtonView.xaml.cs">
       <DependentUpon>NavBarButtonView.xaml</DependentUpon>
     </Compile>
-    <Compile Update="Pages\WudPage.xaml.cs">
-      <DependentUpon>WudPage.xaml</DependentUpon>
-    </Compile>
     <Compile Update="Pages\AssetsPage.xaml.cs">
       <DependentUpon>AssetsPage.xaml</DependentUpon>
     </Compile>
@@ -89,6 +86,9 @@
     <MauiXaml Update="Components\ClaimNftButtonView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
+    <MauiXaml Update="Components\Events\EventItemView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
     <MauiXaml Update="Components\PlayWudButtonView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
@@ -98,10 +98,13 @@
     <MauiXaml Update="OnboardingShell.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
-    <MauiXaml Update="Pages\WelcomePage.xaml">
+    <MauiXaml Update="Pages\EventDetailsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
-    <MauiXaml Update="Pages\WudPage.xaml">
+    <MauiXaml Update="Pages\EventsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
+    <MauiXaml Update="Pages\WelcomePage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
     <MauiXaml Update="Pages\AssetsPage.xaml">
