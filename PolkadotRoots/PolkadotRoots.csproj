@@ -62,6 +62,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Maui.Controls" Version="9.0.81" />
+    <PackageReference Include="SkiaSharp" Version="3.119.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -86,6 +87,9 @@
     <MauiXaml Update="Components\ClaimNftButtonView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
+    <MauiXaml Update="Components\Dotbacks\DotbackItemView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
     <MauiXaml Update="Components\Events\EventItemView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
@@ -98,10 +102,22 @@
     <MauiXaml Update="OnboardingShell.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
+    <MauiXaml Update="Pages\DotbackDetailsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
+    <MauiXaml Update="Pages\DotbackRegistrationPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
+    <MauiXaml Update="Pages\DotbacksPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
     <MauiXaml Update="Pages\EventDetailsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
     <MauiXaml Update="Pages\EventsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
+    <MauiXaml Update="Pages\RegisterEventPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
     <MauiXaml Update="Pages\WelcomePage.xaml">
@@ -120,6 +136,9 @@
 
   <ItemGroup>
     <None Update="Components\ClaimNftButtonView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Components\Dotbacks\DotbackItemView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
     <None Update="Components\PlayWudButtonView.xaml">

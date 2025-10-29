@@ -2,6 +2,9 @@ using CommunityCore;
 using CommunityCore.Events;
 using CommunityCore.Interest;
 using CommunityCore.Storage;
+using Hydration.NetApi.Generated;
+using PlutoFramework.Model;
+using PlutoFramework.Model.HydraDX;
 using PlutoFramework.Templates.PageTemplate;
 
 namespace PolkadotRoots.Pages;
@@ -25,6 +28,7 @@ public partial class EventDetailsPage : PageTemplate
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+
         await vm.LoadAsync();
     }
 

@@ -1,5 +1,4 @@
-using System.Windows.Input;
-using Microsoft.Maui.Controls;
+using CommunityToolkit.Mvvm.Input;
 
 namespace PolkadotRoots.Components.Events;
 
@@ -24,7 +23,7 @@ public partial class EventItemView : ContentView
         nameof(Location), typeof(string), typeof(EventItemView), default(string));
 
     public static readonly BindableProperty CommandProperty = BindableProperty.Create(
-        nameof(Command), typeof(ICommand), typeof(EventItemView));
+        nameof(Command), typeof(IAsyncRelayCommand), typeof(EventItemView));
 
     public static readonly BindableProperty CommandParameterProperty = BindableProperty.Create(
         nameof(CommandParameter), typeof(object), typeof(EventItemView));
@@ -65,9 +64,9 @@ public partial class EventItemView : ContentView
         set => SetValue(LocationProperty, value);
     }
 
-    public ICommand? Command
+    public IAsyncRelayCommand? Command
     {
-        get => (ICommand?)GetValue(CommandProperty);
+        get => (IAsyncRelayCommand?)GetValue(CommandProperty);
         set => SetValue(CommandProperty, value);
     }
 

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<page:PageTemplate xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:eventsui="clr-namespace:PolkadotRoots.Components.Events"
-             x:Class="PolkadotRoots.Pages.EventsPage"
-             Title="Events"
+             x:Class="PolkadotRoots.Pages.DotbacksPage"
+             Title="Dotbacks"
+             xmlns:page="clr-namespace:PlutoFramework.Templates.PageTemplate;assembly=PlutoFramework"
+             xmlns:dotbacks="clr-namespace:PolkadotRoots.Components.Dotbacks"
              xmlns:customlayouts="clr-namespace:PlutoFramework.Components.CustomLayouts;assembly=PlutoFramework"
              xmlns:txanalyzer="clr-namespace:PlutoFramework.Components.TransactionAnalyzer;assembly=PlutoFramework"
              xmlns:networkselect="clr-namespace:PlutoFramework.Components.NetworkSelect;assembly=PlutoFramework"
@@ -23,60 +24,46 @@
              xmlns:loading="clr-namespace:PlutoFramework.Components.Loading;assembly=PlutoFramework"
              xmlns:sumsub="clr-namespace:PlutoFramework.Components.Sumsub;assembly=PlutoFramework"
              xmlns:extrinsic="clr-namespace:PlutoFramework.Components.Extrinsic;assembly=PlutoFramework"
-             xmlns:bottomnavbar="clr-namespace:PolkadotRoots.Components.BottomNavBar"
              BackgroundColor="{AppThemeBinding Light=White, Dark=#0a0a0a}"
+                   x:Name="self"
              Shell.PresentationMode="ModalNotAnimated"
              HideSoftInputOnTapped="True">
 
-    <AbsoluteLayout
-            AbsoluteLayout.LayoutBounds="0.5, 0.5, 1, 1" AbsoluteLayout.LayoutFlags="All"
-       >
+    <AbsoluteLayout AbsoluteLayout.LayoutBounds="0.5, 0.5, 1, 1" AbsoluteLayout.LayoutFlags="All">
 
-        <CollectionView x:Name="EventsCollection"
+        <CollectionView x:Name="DotbacksCollection"
                         ItemsSource="{Binding Items}"
                         RemainingItemsThreshold="6"
                         RemainingItemsThresholdReached="OnRemainingItemsThresholdReached"
                         SelectionMode="None"
+                        
                         AbsoluteLayout.LayoutBounds="0.5, 0.5, 1, 1"
                         AbsoluteLayout.LayoutFlags="All">
             <CollectionView.ItemsLayout>
-                <LinearItemsLayout Orientation="Vertical"
-                                   ItemSpacing="0" />
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="15" />
             </CollectionView.ItemsLayout>
             <CollectionView.Header>
-                <VerticalStackLayout MinimumHeightRequest="15">
-                    <!-- Header -->
-                </VerticalStackLayout>
+                <VerticalStackLayout MinimumHeightRequest="15" />
             </CollectionView.Header>
             <CollectionView.Footer>
-                <StackLayout HeightRequest="200" >
-                    <customlayouts:LoadingItemView HeightRequest="80" 
-                                               Margin="20, 0, 20, 0"
-                                                IsVisible="{Binding Busy}"/>
-                    <customlayouts:TransparentItemView Text="No upcoming events"
-                                                       HeightRequest="80" 
-                                                   Margin="20, 0, 20, 0"
-                                                   IsVisible="{Binding NoItems}" />
+                <StackLayout HeightRequest="200">
+                    <customlayouts:LoadingItemView HeightRequest="80" Margin="20,0,20,0" IsVisible="{Binding Busy}"/>
+                    <customlayouts:TransparentItemView Text="No dotbacks" HeightRequest="80" Margin="20,0,20,0" IsVisible="{Binding NoItems}" />
                 </StackLayout>
             </CollectionView.Footer>
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <eventsui:EventItemView
-                        Padding="20,5,20,10"
-                        ImageSource="{Binding ImageSource}"
-                        Title="{Binding Title}"
-                        Subtitle="{Binding Subtitle}"
-                        StartText="{Binding StartText}"
-                        EndText="{Binding EndText}"
-                        Location="{Binding Location}"
-                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenDetailsCommand}"
-                        CommandParameter="{Binding Id}" />
+                    <dotbacks:DotbackItemView Title="{Binding Address}"
+                                              ImageSource="{Binding ImageSource}"
+                                              UsdRequested="{Binding UsdRequested}"
+                                              Paid="{Binding Paid}"
+                                              Rejected="{Binding Rejected}"
+                                              Command="{Binding Source={x:Reference self}, Path=BindingContext.OpenDetailsCommand}"
+                                              CommandParameter="{Binding .}"
+                                              Margin="20,0,20,0"/>
                 </DataTemplate>
-            </CollectionView.ItemTemplate> 
+            </CollectionView.ItemTemplate>
         </CollectionView>
-
-        <!-- Bottom nav -->
-        <bottomnavbar:BottomNavBarView />
 
         <!-- Global overlays -->
         <extrinsic:ExtrinsicStatusStackLayout />
@@ -96,4 +83,4 @@
         <password:EnterPasswordPopupView />
         <loading:FullPageLoadingView />
     </AbsoluteLayout>
-</ContentPage>
+</page:PageTemplate>

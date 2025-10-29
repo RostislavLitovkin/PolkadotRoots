@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<page:PageTemplate xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PolkadotRoots.Pages.DotbackDetailsPage"
+                   xmlns:nft="clr-namespace:PlutoFramework.Components.Nft;assembly=PlutoFramework"
+             xmlns:page="clr-namespace:PlutoFramework.Templates.PageTemplate;assembly=PlutoFramework"
+             xmlns:buttons="clr-namespace:PlutoFramework.Components.Buttons;assembly=PlutoFramework"
+             Title="{Binding Title}"
+             BackgroundColor="{AppThemeBinding Light=#ffffff, Dark=#0f0f12}">
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
+            <nft:NftImageView ImageSource="{Binding ImageUrl}" />
+
+            <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="10" RowSpacing="8">
+                <Label Grid.Row="0" Grid.Column="0" Text="Event ID:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
+                <Label Grid.Row="0" Grid.Column="1" Text="{Binding EventId}" />
+
+                <Label Grid.Row="1" Grid.Column="0" Text="Address:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
+                <Label Grid.Row="1" Grid.Column="1" Text="{Binding Address}" LineBreakMode="TailTruncation" />
+
+                <Label Grid.Row="2" Grid.Column="0" Text="Amount (USD):" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
+                <Label Grid.Row="2" Grid.Column="1" Text="{Binding UsdAmount}" />
+            </Grid>
+
+            <buttons:ElevatedButton Text="Pay (DOT)"
+                                    ButtonState="Enabled"
+                                    Command="{Binding PayCommand}"/>
+
+            <buttons:ElevatedButton Text="Reject"
+                                    ButtonState="Warning"
+                                    Command="{Binding RejectCommand}"/>    
+        </VerticalStackLayout>
+    </ScrollView>
+</page:PageTemplate>

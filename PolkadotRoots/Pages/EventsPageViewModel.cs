@@ -1,6 +1,7 @@
-using CommunityCore;
 using CommunityCore.Events;
 using CommunityCore.Storage;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -17,59 +18,59 @@ public sealed class EventListItem
     public long? Id { get; init; }
 }
 
-public sealed class EventsViewModel
+public partial class EventsViewModel : ObservableObject
 {
     private readonly CommunityEventsApiClient api;
     private readonly StorageApiClient storage;
     private int pageIndex = 0;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(NoItems))]
     private bool reachedEnd = false;
+
+    public bool NoItems => Initialized && Items.Count == 0;
+
+    [ObservableProperty]
     private bool busy = false;
 
     public bool Initialized { get; private set; }
     public ObservableCollection<EventListItem> Items { get; } = new();
 
-    public ICommand OpenDetailsCommand { get; }
+    [RelayCommand]
+    public async Task OpenDetailsAsync(object param)
+    {
+        try
+        {
+            long? id = null;
+            switch (param)
+            {
+                case long l: id = l; break;
+                case int i: id = i; break;
+                case string s when long.TryParse(s, out var v): id = v; break;
+            }
+            if (id.HasValue)
+            {
+                await Application.Current.MainPage.Navigation.PushAsync(new EventDetailsPage(id.Value));
+            }
+        }
+        catch { /* ignore navigation errors */ }
+    }
 
     public EventsViewModel(CommunityEventsApiClient api, StorageApiClient storage)
     {
         this.api = api;
         this.storage = storage;
-
-        OpenDetailsCommand = new Command<object?>(async param =>
-        {
-            try
-            {
-                long? id = null;
-                switch (param)
-                {
-                    case long l: id = l; break;
-                    case int i: id = i; break;
-                    case string s when long.TryParse(s, out var v): id = v; break;
-                }
-                if (id.HasValue)
-                {
-                    await Application.Current.MainPage.Navigation.PushAsync(new EventDetailsPage(id.Value));
-                }
-            }
-            catch { /* ignore navigation errors */ }
-        });
     }
 
     public async Task LoadNextPageAsync()
     {
-        Console.WriteLine("Load next called");
-        if (busy || reachedEnd) return;
-        busy = true;
+        if (Busy || ReachedEnd) return;
+        Busy = true;
         try
         {
-            Console.WriteLine("Loading next events...");
-
-
             var page = await api.GetPageAsync(page: pageIndex, size: 20);
 
-            Console.WriteLine("events: " + page.Content.Count);
-
-            reachedEnd = page.Last || page.Content.Count == 0;
+            ReachedEnd = page.Last || page.Content.Count == 0;
             pageIndex++;
 
             foreach (var ev in page.Content)
@@ -88,7 +89,7 @@ public sealed class EventsViewModel
         }
         finally
         {
-            busy = false;
+            Busy = false;
         }
     }
 
@@ -156,26 +157,21 @@ public sealed class EventsViewModel
 
     private async Task<string?> ResolveImageAsync(EventDto ev)
     {
-        var c = ev.Image;
-        if (!string.IsNullOrWhiteSpace(c))
+        if (string.IsNullOrWhiteSpace(ev.Image))
         {
-            if (Uri.TryCreate(c, UriKind.Absolute, out var _)) return c; // already URL
-            try
-            {
-                string folder = "events";
-                string file = c;
-                var idx = c.LastIndexOf('/');
-                if (idx > 0)
-                {
-                    folder = c.Substring(0, idx);
-                    file = c[(idx + 1)..];
-                }
-                var url = await storage.GetImageAsync(file, folder: folder);
-                if (!string.IsNullOrWhiteSpace(url)) return url;
-            }
-            catch { /* ignore */ }
+            return null;
+
         }
+
+        try
+        {
+            var url = await storage.GetImageAsync(ev.Image);
+            if (!string.IsNullOrWhiteSpace(url)) return url;
+        }
+        catch { /* ignore */ }
+
         return null;
+
     }
 
     private static string? FirstNonEmpty(params string?[] values)

@@ -32,6 +32,8 @@ namespace PolkadotRoots.Pages
             IsRefreshing = false;
         }
 
+        [RelayCommand]
+        public Task RegisterEventAsync() => Shell.Current.Navigation.PushAsync(new RegisterEventPage());
 
         public static void OnScanned(object? sender, ZXing.Net.Maui.BarcodeDetectionEventArgs e)
         {

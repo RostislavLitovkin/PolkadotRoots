@@ -70,6 +70,24 @@ public partial class EventDetailsViewModel : ObservableObject
         }
     }
 
+
+    [RelayCommand]
+    public Task DotbackAsync() => Shell.Current.Navigation.PushAsync(new DotbackRegistrationPage(id, Title));
+
+    [RelayCommand]
+    public async Task ManageDotbacksAsync()
+    {
+        try
+        {
+            await Shell.Current.Navigation.PushAsync(new DotbacksPage(eventId: id, title: $"{Title} DOT-backs"));
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+
+
     public ObservableCollection<string> Organizers { get; } = new();
 
     public EventDetailsViewModel(CommunityEventsApiClient api, StorageApiClient storage, CommunityInterestApiClient interestApi, long id)

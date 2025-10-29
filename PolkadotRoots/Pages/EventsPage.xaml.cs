@@ -1,6 +1,9 @@
 using CommunityCore;
 using CommunityCore.Events;
 using CommunityCore.Storage;
+using Hydration.NetApi.Generated;
+using PlutoFramework.Model;
+using PlutoFramework.Model.HydraDX;
 
 namespace PolkadotRoots.Pages;
 
@@ -24,9 +27,18 @@ public partial class EventsPage : ContentPage
         BindingContext = vm;
     }
 
-    protected override async void OnAppearing()
+    protected override void OnAppearing()
     {
         base.OnAppearing();
+
+        _ = AppearingAsync();
+    }
+
+    private async Task AppearingAsync()
+    {
+        var client = await SubstrateClientModel.GetOrAddSubstrateClientAsync(PlutoFramework.Constants.EndpointEnum.Hydration, CancellationToken.None);
+        await Sdk.GetAssetsAsync((SubstrateClientExt)client.SubstrateClient, null, CancellationToken.None);
+
         if (!vm.Initialized)
             await vm.LoadNextPageAsync();
     }

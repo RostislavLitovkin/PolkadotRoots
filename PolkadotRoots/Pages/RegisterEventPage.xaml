@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<page:PageTemplate xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PolkadotRoots.Pages.RegisterEventPage"
+             xmlns:form="clr-namespace:PlutoFramework.Components.Form;assembly=PlutoFramework"
+             xmlns:page="clr-namespace:PlutoFramework.Templates.PageTemplate;assembly=PlutoFramework"
+             xmlns:buttons="clr-namespace:PlutoFramework.Components.Buttons;assembly=PlutoFramework"
+             Title="Register Event"
+             BackgroundColor="{AppThemeBinding Light=#ffffff, Dark=#0f0f12}">
+  <VerticalStackLayout Padding="18" Spacing="16">
+    <Label Text="Organizer" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" />
+    <Label Text="{Binding Address}" LineBreakMode="TailTruncation" />
+
+    <Label Text="Name" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" />
+    <form:FormInputView Placeholder="Event name" Text="{Binding Name}" />
+
+    <Label Text="Description" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" />
+    <form:FormLargeInputView x:Name="desc" Text="{Binding Description}" />
+
+    <Label Text="Links" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" />
+    <form:FormInputView Placeholder="Luma URL" Text="{Binding LumaUrl}" />
+    <form:FormInputView Placeholder="Website" Text="{Binding Website}" />
+    <form:FormInputView Placeholder="Google Maps URL" Text="{Binding MapsUrl}" />
+
+    <Label Text="Location" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" />
+    <form:FormInputView Placeholder="Country" Text="{Binding Country}" />
+    <form:FormInputView Placeholder="Address" Text="{Binding LocationAddress}" />
+
+    <Label Text="Contacts" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" />
+    <form:FormInputView Placeholder="Phone number" Text="{Binding PhoneNumber}" />
+    <form:FormInputView Placeholder="Email address" Text="{Binding EmailAddress}" />
+
+    <Label Text="Details" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" />
+    <form:FormInputView Placeholder="Capacity (optional)" KeyboardType="Numeric" Text="{Binding CapacityText}" />
+    <form:FormInputView Placeholder="Price (optional)" Text="{Binding Price}" />
+
+    <Label Text="Start (ISO or local)" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" />
+    <form:FormInputView Placeholder="2025-01-31 18:00" Text="{Binding StartText}" />
+    <Label Text="End (ISO or local)" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" />
+    <form:FormInputView Placeholder="2025-01-31 23:00" Text="{Binding EndText}" />
+
+    <Label Text="Image" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" />
+    <Image Source="{Binding SelectedImageUrl}" HeightRequest="180" Aspect="AspectFill" IsVisible="{Binding HasImage}" />
+
+    <buttons:ElevatedButton Text="Choose image"
+                            ButtonState="Enabled"
+                            Command="{Binding PickImageCommand}"/>
+
+    <buttons:ElevatedButton Text="Submit"
+                            ButtonState="{Binding SubmitButtonState}"
+                            Command="{Binding SubmitCommand}"/>
+  </VerticalStackLayout>
+</page:PageTemplate>

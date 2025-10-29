@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<page:PageTemplate xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="PolkadotRoots.Pages.EventDetailsPage"
-             xmlns:nft="clr-namespace:PlutoFramework.Components.Nft;assembly=PlutoFramework"
-             xmlns:txanalyzer="clr-namespace:PlutoFramework.Components.TransactionAnalyzer;assembly=PlutoFramework"
-             xmlns:networkselect="clr-namespace:PlutoFramework.Components.NetworkSelect;assembly=PlutoFramework"
-             xmlns:transferview="clr-namespace:PlutoFramework.Components.TransferView;assembly=PlutoFramework"
-             xmlns:dappconnection="clr-namespace:PlutoFramework.Components.DAppConnection;assembly=PlutoFramework"
-             xmlns:messagepopup="clr-namespace:PlutoFramework.Components.MessagePopup;assembly=PlutoFramework"
-             xmlns:transactionrequest="clr-namespace:PlutoFramework.Components.TransactionRequest;assembly=PlutoFramework"
-             xmlns:addressview="clr-namespace:PlutoFramework.Components.AddressView;assembly=PlutoFramework"
-             xmlns:staking="clr-namespace:PlutoFramework.Components.Staking;assembly=PlutoFramework"
-             xmlns:password="clr-namespace:PlutoFramework.Components.Password;assembly=PlutoFramework"
-             xmlns:assetselect="clr-namespace:PlutoFramework.Components.AssetSelect;assembly=PlutoFramework"
-             xmlns:vault="clr-namespace:PlutoFramework.Components.Vault;assembly=PlutoFramework"
-             xmlns:kilt="clr-namespace:PlutoFramework.Components.Kilt;assembly=PlutoFramework"
-             xmlns:loading="clr-namespace:PlutoFramework.Components.Loading;assembly=PlutoFramework"
-             xmlns:page="clr-namespace:PlutoFramework.Templates.PageTemplate;assembly=PlutoFramework"
-             xmlns:card="clr-namespace:PlutoFramework.Components.Card;assembly=PlutoFramework"
-                   xmlns:buttons="clr-namespace:PlutoFramework.Components.Buttons;assembly=PlutoFramework"
-                   xmlns:xcavate="clr-namespace:PlutoFramework.Components.Xcavate;assembly=PlutoFramework"
-             Title="{Binding Title}"
-             BackgroundColor="{AppThemeBinding Light=#ffffff, Dark=#0f0f12}"
-             Shell.PresentationMode="ModalNotAnimated">
+<page:PageTemplate   xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                     x:Class="PolkadotRoots.Pages.EventDetailsPage"
+                     xmlns:nft="clr-namespace:PlutoFramework.Components.Nft;assembly=PlutoFramework"
+                     xmlns:txanalyzer="clr-namespace:PlutoFramework.Components.TransactionAnalyzer;assembly=PlutoFramework"
+                     xmlns:networkselect="clr-namespace:PlutoFramework.Components.NetworkSelect;assembly=PlutoFramework"
+                     xmlns:transferview="clr-namespace:PlutoFramework.Components.TransferView;assembly=PlutoFramework"
+                     xmlns:dappconnection="clr-namespace:PlutoFramework.Components.DAppConnection;assembly=PlutoFramework"
+                     xmlns:messagepopup="clr-namespace:PlutoFramework.Components.MessagePopup;assembly=PlutoFramework"
+                     xmlns:transactionrequest="clr-namespace:PlutoFramework.Components.TransactionRequest;assembly=PlutoFramework"
+                     xmlns:addressview="clr-namespace:PlutoFramework.Components.AddressView;assembly=PlutoFramework"
+                     xmlns:staking="clr-namespace:PlutoFramework.Components.Staking;assembly=PlutoFramework"
+                     xmlns:password="clr-namespace:PlutoFramework.Components.Password;assembly=PlutoFramework"
+                     xmlns:assetselect="clr-namespace:PlutoFramework.Components.AssetSelect;assembly=PlutoFramework"
+                     xmlns:vault="clr-namespace:PlutoFramework.Components.Vault;assembly=PlutoFramework"
+                     xmlns:kilt="clr-namespace:PlutoFramework.Components.Kilt;assembly=PlutoFramework"
+                     xmlns:loading="clr-namespace:PlutoFramework.Components.Loading;assembly=PlutoFramework"
+                     xmlns:page="clr-namespace:PlutoFramework.Templates.PageTemplate;assembly=PlutoFramework"
+                     xmlns:card="clr-namespace:PlutoFramework.Components.Card;assembly=PlutoFramework"
+                     xmlns:buttons="clr-namespace:PlutoFramework.Components.Buttons;assembly=PlutoFramework"
+                     xmlns:xcavate="clr-namespace:PlutoFramework.Components.Xcavate;assembly=PlutoFramework"
+                     Title="{Binding Title}"
+                     BackgroundColor="{AppThemeBinding Light=#ffffff, Dark=#0f0f12}"
+                     Shell.PresentationMode="ModalNotAnimated">
     <VerticalStackLayout Padding="18" x:Name="LayoutRoot"
                          Spacing="15">
 
@@ -64,6 +64,14 @@
 
             </Border.StrokeShape>
         </Border>
+
+        <buttons:ElevatedButton Text="Submit DOT-back"
+                        ButtonState="Enabled"
+                        Command="{Binding DotbackCommand}" />
+
+        <buttons:ElevatedButton Text="Manage DOT-backs"
+                                ButtonState="Enabled"
+                                Command="{Binding ManageDotbacksCommand}" />
 
         <!-- About -->
         <VerticalStackLayout>
@@ -114,8 +122,6 @@
         <!-- Organizers section -->
         <card:Card>
             <card:Card.View>
-
-
                 <VerticalStackLayout  Spacing="10" Padding="0,15,0,15">
                     <Label Text="Organizers" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" />
                     <CollectionView ItemsSource="{Binding Organizers}" SelectionMode="None">
@@ -136,7 +142,7 @@
         <HorizontalStackLayout Grid.Row="3" Spacing="12" Padding="0,12,0,0">
 
 
-            <Button Text="Open in Google Maps" Command="{Binding OpenMapsCommand}" />
+            <buttons:ElevatedButton Text="Open in Google Maps" Command="{Binding OpenMapsCommand}" />
         </HorizontalStackLayout>
     </VerticalStackLayout>
 </page:PageTemplate>
