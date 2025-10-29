@@ -1,6 +1,4 @@
-﻿using PlutoFramework.Components.Account;
-using PlutoFramework.Components.Password;
-using PlutoFramework.Model;
+﻿using PlutoFramework.Model;
 using PolkadotRoots.Components.BottomNavBar;
 
 namespace PolkadotRoots
@@ -22,8 +20,7 @@ namespace PolkadotRoots
 
         public App()
         {
-            var noAccountViewModel = DependencyService.Get<NoAccountPopupViewModel>();
-            noAccountViewModel.AfterCreateAccountNavigation = NewMainPageNavigationAsync;
+            NavigationModel.NavigateAfterAccountCreation = NewMainPageNavigationAsync;
 
             InitializeComponent();
 
