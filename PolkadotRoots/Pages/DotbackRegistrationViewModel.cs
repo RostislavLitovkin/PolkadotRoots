@@ -35,7 +35,11 @@ public partial class DotbackRegistrationViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(SubmitButtonState))]
     private string? fileName = null;
 
-    public ButtonStateEnum SubmitButtonState => UsdAmount > 0 && FileName is not null ? ButtonStateEnum.Enabled : ButtonStateEnum.Disabled;
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(SubmitButtonState))]
+    private Stream? imageStream = null;
+
+    public ButtonStateEnum SubmitButtonState => UsdAmount > 0 && ImageStream is not null ? ButtonStateEnum.Enabled : ButtonStateEnum.Disabled;
 
     public bool HasImage => !string.IsNullOrWhiteSpace(SelectedImageUrl);
 
@@ -55,61 +59,24 @@ public partial class DotbackRegistrationViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task PickImageAsync()
-    {
-        try
-        {
-            var result = await MediaPicker.PickPhotoAsync(new MediaPickerOptions
-            {
-                Title = "Select receipt",
-            });
-
-            if (result == null) return;
-
-            using var pickedStream = await result.OpenReadAsync();
-
-            var folder = $"dotbacks/{EventId}";
-
-            // Compress and downscale to avoid 413 (Payload Too Large) without changing orientation
-            using var compressed = await Task.Run(() => CompressImageToJpeg(pickedStream, maxWidth: 1600, maxHeight: 1600, targetBytes: 1024 * 1024));
-            compressed.Position = 0;
-
-            FileName = $"{Guid.NewGuid():N}.jpg";
-            var contentType = "image/jpeg";
-
-            var upload = await storage.UploadImageAsync(compressed, FileName, contentType, folder);
-
-            SelectedImageUrl = upload.Url;
-            /*
-            try
-            {
-                FileName = $"{Guid.NewGuid():N}{result.FileName.Substring(int.Max(0, result.FileName.IndexOf('.')))}";
-
-                var upload = await storage.UploadImageAsync(pickedStream, FileName, result.ContentType, folder);
-
-                SelectedImageUrl = upload.Url;
-            }
-            catch
-            {
-                
-            }*/
-        }
-        catch (Exception ex)
-        {
-            System.Diagnostics.Debug.WriteLine(ex);
-            await Shell.Current.DisplayAlert("Error", ex.Message, "OK");
-        }
-    }
-
-    [RelayCommand]
     private async Task SubmitAsync()
     {
         try
         {
-            if (string.IsNullOrWhiteSpace(SelectedImageUrl)) return;
-
             var account = await KeysModel.GetAccountAsync();
+
             if (account is null) return;
+
+            var folder = $"dotbacks/{EventId}";
+
+            // Compress and downscale to avoid 413 (Payload Too Large) without changing orientation
+            using var compressed = await Task.Run(() => CompressImageToJpeg(ImageStream!, maxWidth: 1600, maxHeight: 1600, targetBytes: 1024 * 1024));
+            compressed.Position = 0;
+
+            FileName = $"{account.Value}.jpg";
+            var contentType = "image/jpeg";
+
+            var upload = await storage.UploadImageAsync(compressed, FileName, contentType, folder);
 
             var reg = new DotbackRegistrationDto
             {
@@ -126,6 +93,7 @@ public partial class DotbackRegistrationViewModel : ObservableObject
         }
         catch (Exception ex)
         {
+            Console.WriteLine(ex);
             await Shell.Current.DisplayAlert("Error", ex.Message, "OK");
         }
     }

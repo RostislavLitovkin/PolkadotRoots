@@ -24,8 +24,8 @@
                                 KeyboardType="Numeric"
                                 Text="{Binding UsdAmount}" />
 
-            <Label Text="Proof image" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" />
-            <Image Source="{Binding SelectedImageUrl}" HeightRequest="180" Aspect="AspectFill" IsVisible="{Binding HasImage}" />
+            <form:FormImageUploadView Title="Upload receipt"
+                                      ImageStream="{Binding ImageStream}" />
 
             <buttons:ElevatedButton Text="Choose image"
                                     ButtonState="Enabled"
