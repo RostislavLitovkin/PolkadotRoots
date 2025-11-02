@@ -18,6 +18,18 @@
             </settings:GenericButton.GestureRecognizers>
         </settings:GenericButton>
 
+        <settings:GenericButton Title="Import from Nova wallet">
+            <settings:GenericButton.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding ImportFromNovaCommand}" />
+            </settings:GenericButton.GestureRecognizers>
+        </settings:GenericButton>
+
+        <settings:GenericButton Title="Export to Nova wallet">
+            <settings:GenericButton.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding ExportToNovaCommand}" />
+            </settings:GenericButton.GestureRecognizers>
+        </settings:GenericButton>
+
         <settings:GenericButton Title="Credits">
             <settings:GenericButton.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding CreditsCommand}" />
