@@ -27,7 +27,9 @@ public partial class MyDotbacksViewModel : ObservableObject
     [ObservableProperty]
     private bool busy = false;
 
-    public bool Initialized { get; private set; }
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(NoItems))]
+    private bool initialized;
     public ObservableCollection<DotbackListItem> Items { get; } = new();
 
     [RelayCommand]
