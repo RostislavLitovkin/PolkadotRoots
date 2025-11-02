@@ -126,6 +126,9 @@
     <MauiXaml Update="Pages\EventsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
+    <MauiXaml Update="Pages\MyDotbacksPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
     <MauiXaml Update="Pages\RegisterEventPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>

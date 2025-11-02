@@ -2,6 +2,7 @@ using CommunityCore.Events;
 using CommunityCore.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using PlutoFramework.Components.Loading;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -42,9 +43,12 @@ public partial class EventsViewModel : ObservableObject
     [RelayCommand]
     public async Task OpenDetailsAsync(object param)
     {
+        var loading = DependencyService.Get<FullPageLoadingViewModel>();
+
+        loading.IsVisible = true;
         try
         {
-            long? id = null;
+            long? id = null; 
             switch (param)
             {
                 case long l: id = l; break;
@@ -57,6 +61,7 @@ public partial class EventsViewModel : ObservableObject
             }
         }
         catch { /* ignore navigation errors */ }
+        loading.IsVisible = false;
     }
 
     public EventsViewModel(CommunityEventsApiClient api, StorageApiClient storage)

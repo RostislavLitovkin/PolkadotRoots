@@ -11,23 +11,43 @@
         <VerticalStackLayout Padding="20" Spacing="15">
             <nft:NftImageView ImageSource="{Binding ImageUrl}" />
 
-            <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="10" RowSpacing="8">
+            <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" ColumnSpacing="10" RowSpacing="8">
                 <Label Grid.Row="0" Grid.Column="0" Text="Event ID:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
                 <Label Grid.Row="0" Grid.Column="1" Text="{Binding EventId}" />
 
                 <Label Grid.Row="1" Grid.Column="0" Text="Address:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
                 <Label Grid.Row="1" Grid.Column="1" Text="{Binding Address}" LineBreakMode="TailTruncation" />
 
-                <Label Grid.Row="2" Grid.Column="0" Text="Amount:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
+                <Label Grid.Row="2" Grid.Column="0" Text="Amount (USD):" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
                 <Label Grid.Row="2" Grid.Column="1" Text="{Binding ValueText}" />
+
+                <Label Grid.Row="3" Grid.Column="0" Text="Local amount:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
+                <Label Grid.Row="3" Grid.Column="1" Text="{Binding LocalValueText}" IsVisible="{Binding HasConversion}" />
+
+                <Label Grid.Row="4" Grid.Column="0" Text="Status:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
+                <Label Grid.Row="4" Grid.Column="1" Text="{Binding StatusText}" />
+
+                <Label Grid.Row="5" Grid.Column="0" Text="Subscan:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" IsVisible="{Binding HasSubscan}" />
+                <Label Grid.Row="5" Grid.Column="1" IsVisible="{Binding HasSubscan}">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="Open in Subscan" TextDecorations="Underline" TextColor="#2563eb" />
+                        </FormattedString>
+                    </Label.FormattedText>
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding OpenSubscanCommand}" />
+                    </Label.GestureRecognizers>
+                </Label>
             </Grid>
 
             <buttons:ElevatedButton Text="Pay (DOT)"
                                     ButtonState="Enabled"
+                                    IsVisible="{Binding IsOrganizer}"
                                     Command="{Binding PayCommand}"/>
 
             <buttons:ElevatedButton Text="Reject"
                                     ButtonState="Warning"
+                                    IsVisible="{Binding IsOrganizer}"
                                     Command="{Binding RejectCommand}"/>    
         </VerticalStackLayout>
     </ScrollView>

@@ -34,13 +34,9 @@
             <form:FormImageUploadView Title="Upload receipt"
                                       ImageStream="{Binding ImageStream}" />
 
-            <buttons:ElevatedButton Text="Choose image"
-                                    ButtonState="Enabled"
-                                    Command="{Binding PickImageCommand}"/>
-
             <buttons:ElevatedButton Text="Submit"
                                     ButtonState="{Binding SubmitButtonState}"
-                                    Command="{Binding SubmitCommand}"/>
+                                    Command="{Binding SubmitCommand}" />
         </VerticalStackLayout>
     </ScrollView>
 </page:PageTemplate>

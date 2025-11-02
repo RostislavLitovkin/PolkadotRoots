@@ -30,6 +30,9 @@ namespace PolkadotRoots.Pages
             _ = RefreshIsAdminAsync();
         }
 
+        [RelayCommand]
+        public Task ViewDotbacksAsync() => Shell.Current.Navigation.PushAsync(new MyDotbacksPage());
+
         private async Task RefreshIsAdminAsync()
         {
             try
