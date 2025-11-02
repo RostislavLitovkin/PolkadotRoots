@@ -71,7 +71,13 @@
 
         <buttons:ElevatedButton Text="Manage DOT-backs"
                                 ButtonState="Enabled"
+                                IsVisible="{Binding IsOrganizer}"
                                 Command="{Binding ManageDotbacksCommand}" />
+
+        <buttons:ElevatedButton Text="Edit event details"
+                        ButtonState="Enabled"
+                        IsVisible="{Binding IsOrganizer}"
+                        Command="{Binding EditEventCommand}" />
 
         <!-- About -->
         <VerticalStackLayout>
@@ -124,7 +130,7 @@
             <card:Card.View>
                 <VerticalStackLayout  Spacing="10" Padding="0,15,0,15">
                     <Label Text="Organizers" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" />
-                    <CollectionView ItemsSource="{Binding Organizers}" SelectionMode="None">
+                    <CollectionView ItemsSource="{Binding OrganizersPolkadotFormatted}" SelectionMode="None">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
                                 <Grid ColumnDefinitions="*,Auto" Padding="0,6">

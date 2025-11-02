@@ -12,7 +12,7 @@
     <UseMauiEssentials>false</UseMauiEssentials>
 
 		<!-- Display name -->
-		<ApplicationTitle>Polkadot Roots</ApplicationTitle>
+		<ApplicationTitle>Polkadot Community</ApplicationTitle>
 
 		<!-- App Identifier -->
 		<ApplicationId>app.plutolabs.polkadotcommunity</ApplicationId>
@@ -42,15 +42,12 @@
     <MauiIcon Include="Resources\AppIcon\appicon.png" Color="#ff2670" />
   </ItemGroup>
 
-  <PropertyGroup>
-    <PublishTrimmed>false</PublishTrimmed>
-  </PropertyGroup>
+  <ItemGroup>
 
-	<ItemGroup>
 
-		<!-- Splash Screen -->
-     <MauiSplashScreen Include="Resources\Splash\splash.png" Color="#ff2670" BaseSize="128,128" />
-        
+    <!-- Splash Screen -->
+    <MauiSplashScreen Include="Resources\Splash\splash.png" Color="#ff2670" BaseSize="128,128" />
+
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
 
@@ -71,7 +68,9 @@
 	</ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Maui" Version="9.0.2" />
     <PackageReference Include="Microsoft.Maui.Controls" Version="9.0.81" />
+    <PackageReference Include="Plugin.Fingerprint" Version="3.0.0-beta.1" />
     <PackageReference Include="SkiaSharp" Version="3.119.0" />
   </ItemGroup>
 
@@ -130,9 +129,6 @@
     <MauiXaml Update="Pages\RegisterEventPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
-    <MauiXaml Update="Pages\WelcomePage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </MauiXaml>
     <MauiXaml Update="Pages\AssetsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
@@ -140,6 +136,9 @@
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
     <MauiXaml Update="Pages\SettingsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
+    <MauiXaml Update="Pages\WelcomePage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
   </ItemGroup>

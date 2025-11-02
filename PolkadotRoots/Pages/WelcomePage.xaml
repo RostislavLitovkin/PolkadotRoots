@@ -5,15 +5,27 @@
              x:Class="PolkadotRoots.Pages.WelcomePage"
              Title="WelcomePage">
     <AbsoluteLayout AbsoluteLayout.LayoutBounds="0,0,1,1"
-                    AbsoluteLayout.LayoutFlags="All">
+                    AbsoluteLayout.LayoutFlags="All"
+                    BackgroundColor="#000000">
+        <!-- Background video host (local ethpraguevertical.mp4 injected in code-behind) -->
+        <WebView
+            x:Name="BackgroundWebView"
+            AbsoluteLayout.LayoutBounds="0,0,1,1"
+            AbsoluteLayout.LayoutFlags="All"
+            InputTransparent="True"
+            Opacity="0.5"/>
+
+        <!-- Foreground content -->
         <VerticalStackLayout AbsoluteLayout.LayoutBounds="0,0,1,1"
                              AbsoluteLayout.LayoutFlags="All"
                              Margin="0,90,0,0">
             <Label HorizontalOptions="Center"
-               HorizontalTextAlignment="Center">
+                   HorizontalTextAlignment="Center"
+                   >
                 <Label.FormattedText>
                     <FormattedString>
                         <Span Text="Welcome"
+                              TextColor="White"
                               FontSize="30"
                               FontFamily="UnboundedBold" />
                     </FormattedString>
@@ -24,6 +36,7 @@
                 <Label.FormattedText>
                     <FormattedString>
                         <Span Text="to"
+                              TextColor="White"
                               FontSize="30"
                               FontFamily="UnboundedBold" />
                     </FormattedString>
@@ -34,23 +47,23 @@
                 <Label.FormattedText>
                     <FormattedString>
                         <Span Text="Web3"
+                              TextColor="White"
                               FontSize="30"
                               FontFamily="UnboundedBold" />
                     </FormattedString>
                 </Label.FormattedText>
             </Label>
-
-            
         </VerticalStackLayout>
 
         <Image Source="polkadotroots_logo_transparent.png"
-                AbsoluteLayout.LayoutBounds="0.5, 0.5, 200, 200"
-               AbsoluteLayout.LayoutFlags="PositionProportional" />
+               AbsoluteLayout.LayoutBounds="0.5, 0.5, 200, 200"
+               AbsoluteLayout.LayoutFlags="PositionProportional"
+               IsVisible="False" />
 
         <buttons:ElevatedButton AbsoluteLayout.LayoutBounds="0.5, 1, 1, AutoSize"
                                 AbsoluteLayout.LayoutFlags="PositionProportional,WidthProportional"
                                 Margin="20"
                                 Text="Join"
-                                Command="{Binding JoinCommand}"/>
+                                Command="{Binding JoinCommand}" />
     </AbsoluteLayout>
 </ContentPage>

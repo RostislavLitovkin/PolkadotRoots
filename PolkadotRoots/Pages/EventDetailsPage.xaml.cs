@@ -23,6 +23,10 @@ public partial class EventDetailsPage : PageTemplate
         var interestApi = new CommunityInterestApiClient(http, new CommunityApiOptions());
         vm = new EventDetailsViewModel(eventsApi, storage, interestApi, id);
         BindingContext = vm;
+
+
+
+        Console.WriteLine("My Address: " + KeysModel.GetSubstrateKey());
     }
 
     protected override async void OnAppearing()

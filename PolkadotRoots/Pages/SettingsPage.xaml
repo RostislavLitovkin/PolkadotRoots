@@ -18,12 +18,6 @@
             </settings:GenericButton.GestureRecognizers>
         </settings:GenericButton>
 
-        <settings:GenericButton Title="Developer settings">
-            <settings:GenericButton.GestureRecognizers>
-                <TapGestureRecognizer Command="{Binding DeveloperSettingsCommand}" />
-            </settings:GenericButton.GestureRecognizers>
-        </settings:GenericButton>
-
         <settings:GenericButton Title="Credits">
             <settings:GenericButton.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding CreditsCommand}" />

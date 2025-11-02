@@ -1,5 +1,6 @@
 using CommunityCore;
 using CommunityCore.Dotback;
+using CommunityCore.Events;
 using CommunityCore.Storage;
 using PlutoFramework.Templates.PageTemplate;
 
@@ -9,15 +10,17 @@ public partial class DotbackRegistrationPage : PageTemplate
 {
     private readonly DotbackRegistrationViewModel vm;
 
-    public DotbackRegistrationPage(long eventId, string? eventName)
+    public DotbackRegistrationPage(long eventId, string? eventName, string countryCode)
     {
         InitializeComponent();
 
-        var storage = new StorageApiClient(new HttpClient(), new CommunityApiOptions());
-        var api = new CommunityDotbacksApiClient(new HttpClient(), new CommunityApiOptions());
+        var http = new HttpClient();
+        var storage = new StorageApiClient(http, new CommunityApiOptions());
+        var api = new CommunityDotbacksApiClient(http, new CommunityApiOptions());
+        var eventsApi = new CommunityEventsApiClient(http, new CommunityApiOptions());
 
-        vm = new DotbackRegistrationViewModel(storage, api, eventId, eventName);
+        vm = new DotbackRegistrationViewModel(storage, api, eventId, eventName, countryCode);
         BindingContext = vm;
-        vm.Init();
+        _ = vm.InitAsync();
     }
 }

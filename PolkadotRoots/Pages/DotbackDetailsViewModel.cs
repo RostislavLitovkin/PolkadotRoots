@@ -1,4 +1,4 @@
-using CommunityCore;
+﻿using CommunityCore;
 using CommunityCore.Dotback;
 using CommunityCore.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -8,6 +8,7 @@ using PlutoFramework.Constants;
 using PlutoFramework.Model;
 using PlutoFramework.Model.HydraDX;
 using System.Numerics;
+using CommunityCore.Events;
 
 namespace PolkadotRoots.Pages;
 
@@ -27,10 +28,26 @@ public partial class DotbackDetailsViewModel : ObservableObject
     private string address = string.Empty;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ValueText))]
     private double usdAmount;
 
     [ObservableProperty]
     private string? imageUrl;
+
+    // Conversion state
+    [ObservableProperty]
+    private string? country;
+
+    [ObservableProperty]
+    private string? currency;
+
+    [ObservableProperty]
+    private decimal? usdToLocalRate;
+
+    public bool HasConversion => UsdToLocalRate.HasValue && !string.IsNullOrWhiteSpace(Currency) && !string.IsNullOrWhiteSpace(Country);
+
+    public string ValueText => HasConversion ? $"{UsdAmount:F2} USD ≈ {(decimal)UsdAmount / UsdToLocalRate!.Value:F2} {Currency}"
+        : $"{UsdAmount:F2} USD";
 
     public DotbackDetailsViewModel(DotbackDto dto, StorageApiClient storage, CommunityDotbacksApiClient dotbacksApi)
     {
@@ -50,6 +67,22 @@ public partial class DotbackDetailsViewModel : ObservableObject
             if (!string.IsNullOrWhiteSpace(dto.ImageUrl))
             {
                 ImageUrl = await storage.GetImageAsync(dto.ImageUrl);
+            }
+        }
+        catch { }
+
+        // Load event country and conversion rate
+        try
+        {
+            var http = new HttpClient();
+            var eventsApi = new CommunityEventsApiClient(http, new CommunityApiOptions());
+            var ev = await eventsApi.GetAsync(EventId);
+            if (ev != null)
+            {
+                Country = ev.Country;
+                var (currencySymbol, isoCurrencySymbol, exchangeRate) = await Helpers.CurrencyHelper.GetCurrencySymbolAndRateToUsdAsync(Country);
+                Currency = currencySymbol;
+                UsdToLocalRate = exchangeRate;
             }
         }
         catch { }

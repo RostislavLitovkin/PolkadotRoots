@@ -39,7 +39,7 @@ namespace PolkadotRoots.Pages
 
             await SQLiteModel.DeleteAllDatabasesAsync();
 
-            Application.Current.MainPage = new SetupPasswordPage { Navigation = App.NewMainPageNavigationAsync };
+            App.Current.MainPage = new OnboardingShell();
         }
 
         [RelayCommand]

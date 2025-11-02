@@ -18,8 +18,8 @@
                 <Label Grid.Row="1" Grid.Column="0" Text="Address:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
                 <Label Grid.Row="1" Grid.Column="1" Text="{Binding Address}" LineBreakMode="TailTruncation" />
 
-                <Label Grid.Row="2" Grid.Column="0" Text="Amount (USD):" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
-                <Label Grid.Row="2" Grid.Column="1" Text="{Binding UsdAmount}" />
+                <Label Grid.Row="2" Grid.Column="0" Text="Amount:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
+                <Label Grid.Row="2" Grid.Column="1" Text="{Binding ValueText}" />
             </Grid>
 
             <buttons:ElevatedButton Text="Pay (DOT)"

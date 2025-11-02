@@ -1,6 +1,7 @@
 using CommunityCore;
 using CommunityCore.Dotback;
 using CommunityCore.Storage;
+using PlutoFramework.Model;
 using PlutoFramework.Templates.PageTemplate;
 
 namespace PolkadotRoots.Pages;

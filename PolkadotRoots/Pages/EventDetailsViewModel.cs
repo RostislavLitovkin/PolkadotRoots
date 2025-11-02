@@ -4,6 +4,7 @@ using CommunityCore.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PlutoFramework.Model;
+using Substrate.NetApi;
 using System.Collections.ObjectModel;
 
 namespace PolkadotRoots.Pages;
@@ -26,6 +27,16 @@ public partial class EventDetailsViewModel : ObservableObject
     [ObservableProperty] private string? lumaUrl;
     [ObservableProperty] private string? website;
     [ObservableProperty] private string capacityText = string.Empty;
+    [ObservableProperty] private string country = string.Empty;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsOrganizer))]
+    [NotifyPropertyChangedFor(nameof(OrganizersPolkadotFormatted))]
+    private ObservableCollection<string> organizers = new();
+
+    public ObservableCollection<string> OrganizersPolkadotFormatted => new(
+        Organizers.Select(address => Utils.GetAddressFrom(Utils.GetPublicKeyFrom(address), ss58Prefix: 0))
+    );
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(InterestedText))]
@@ -38,6 +49,8 @@ public partial class EventDetailsViewModel : ObservableObject
     private bool isInterested = false;
 
     public bool InterestButtonIsVisible => !IsInterested;
+
+    public bool IsOrganizer => Organizers.Contains(KeysModel.GetSubstrateKey());
 
     [RelayCommand]
     public async Task InterestAsync()
@@ -72,7 +85,7 @@ public partial class EventDetailsViewModel : ObservableObject
 
 
     [RelayCommand]
-    public Task DotbackAsync() => Shell.Current.Navigation.PushAsync(new DotbackRegistrationPage(id, Title));
+    public Task DotbackAsync() => Shell.Current.Navigation.PushAsync(new DotbackRegistrationPage(id, Title, Country));
 
     [RelayCommand]
     public async Task ManageDotbacksAsync()
@@ -88,7 +101,8 @@ public partial class EventDetailsViewModel : ObservableObject
     }
 
 
-    public ObservableCollection<string> Organizers { get; } = new();
+    [RelayCommand]
+    public Task EditEventAsync() => Shell.Current.Navigation.PushAsync(new RegisterEventPage(id));
 
     public EventDetailsViewModel(CommunityEventsApiClient api, StorageApiClient storage, CommunityInterestApiClient interestApi, long id)
     {
@@ -140,10 +154,10 @@ public partial class EventDetailsViewModel : ObservableObject
         PriceText = string.IsNullOrWhiteSpace(ev.Price) ? "See details" : ev.Price;
         LumaUrl = ev.LumaUrl; Website = ev.Website;
         CapacityText = ev.Capacity.HasValue ? ev.Capacity.Value.ToString() : string.Empty;
+        Country = ev.Country!;
 
-        Organizers.Clear();
         if (ev.OrganizatorAddresses != null)
-            foreach (var a in ev.OrganizatorAddresses) Organizers.Add(a);
+            Organizers = new ObservableCollection<string>(ev.OrganizatorAddresses);
 
         BannerImage = await storage.GetImageAsync(ev.Image!);
 

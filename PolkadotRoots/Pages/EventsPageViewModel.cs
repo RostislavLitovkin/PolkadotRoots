@@ -33,6 +33,9 @@ public partial class EventsViewModel : ObservableObject
     [ObservableProperty]
     private bool busy = false;
 
+    [ObservableProperty]
+    private bool isRefreshing = false;
+
     public bool Initialized { get; private set; }
     public ObservableCollection<EventListItem> Items { get; } = new();
 
@@ -60,6 +63,27 @@ public partial class EventsViewModel : ObservableObject
     {
         this.api = api;
         this.storage = storage;
+    }
+
+    [RelayCommand]
+    private async Task RefreshAsync()
+    {
+        if (Busy) return;
+        IsRefreshing = true;
+        try
+        {
+            // Reset paging and content
+            pageIndex = 0;
+            ReachedEnd = false;
+            Initialized = false;
+            Items.Clear();
+
+            await LoadNextPageAsync();
+        }
+        finally
+        {
+            IsRefreshing = false;
+        }
     }
 
     public async Task LoadNextPageAsync()

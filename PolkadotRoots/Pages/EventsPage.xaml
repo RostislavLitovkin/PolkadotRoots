@@ -32,48 +32,52 @@
             AbsoluteLayout.LayoutBounds="0.5, 0.5, 1, 1" AbsoluteLayout.LayoutFlags="All"
        >
 
-        <CollectionView x:Name="EventsCollection"
-                        ItemsSource="{Binding Items}"
-                        RemainingItemsThreshold="6"
-                        RemainingItemsThresholdReached="OnRemainingItemsThresholdReached"
-                        SelectionMode="None"
-                        AbsoluteLayout.LayoutBounds="0.5, 0.5, 1, 1"
-                        AbsoluteLayout.LayoutFlags="All">
-            <CollectionView.ItemsLayout>
-                <LinearItemsLayout Orientation="Vertical"
-                                   ItemSpacing="0" />
-            </CollectionView.ItemsLayout>
-            <CollectionView.Header>
-                <VerticalStackLayout MinimumHeightRequest="15">
-                    <!-- Header -->
-                </VerticalStackLayout>
-            </CollectionView.Header>
-            <CollectionView.Footer>
-                <StackLayout HeightRequest="200" >
-                    <customlayouts:LoadingItemView HeightRequest="80" 
-                                               Margin="20, 0, 20, 0"
-                                                IsVisible="{Binding Busy}"/>
-                    <customlayouts:TransparentItemView Text="No upcoming events"
-                                                       HeightRequest="80" 
+        <RefreshView
+            AbsoluteLayout.LayoutBounds="0.5, 0.5, 1, 1"
+            AbsoluteLayout.LayoutFlags="All"
+            Command="{Binding RefreshCommand}"
+            IsRefreshing="{Binding IsRefreshing}">
+            <CollectionView x:Name="EventsCollection"
+                            ItemsSource="{Binding Items}"
+                            RemainingItemsThreshold="6"
+                            RemainingItemsThresholdReached="OnRemainingItemsThresholdReached"
+                            SelectionMode="None">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical"
+                                       ItemSpacing="0" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.Header>
+                    <VerticalStackLayout MinimumHeightRequest="15">
+                        <!-- Header -->
+                    </VerticalStackLayout>
+                </CollectionView.Header>
+                <CollectionView.Footer>
+                    <StackLayout HeightRequest="200" >
+                        <customlayouts:LoadingItemView HeightRequest="80" 
                                                    Margin="20, 0, 20, 0"
-                                                   IsVisible="{Binding NoItems}" />
-                </StackLayout>
-            </CollectionView.Footer>
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <eventsui:EventItemView
-                        Padding="20,5,20,10"
-                        ImageSource="{Binding ImageSource}"
-                        Title="{Binding Title}"
-                        Subtitle="{Binding Subtitle}"
-                        StartText="{Binding StartText}"
-                        EndText="{Binding EndText}"
-                        Location="{Binding Location}"
-                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenDetailsCommand}"
-                        CommandParameter="{Binding Id}" />
-                </DataTemplate>
-            </CollectionView.ItemTemplate> 
-        </CollectionView>
+                                                    IsVisible="{Binding Busy}"/>
+                        <customlayouts:TransparentItemView Text="No upcoming events"
+                                                           HeightRequest="80" 
+                                                       Margin="20, 0, 20, 0"
+                                                       IsVisible="{Binding NoItems}" />
+                    </StackLayout>
+                </CollectionView.Footer>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <eventsui:EventItemView
+                            Padding="20,5,20,10"
+                            ImageSource="{Binding ImageSource}"
+                            Title="{Binding Title}"
+                            Subtitle="{Binding Subtitle}"
+                            StartText="{Binding StartText}"
+                            EndText="{Binding EndText}"
+                            Location="{Binding Location}"
+                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenDetailsCommand}"
+                            CommandParameter="{Binding Id}" />
+                    </DataTemplate>
+                </CollectionView.ItemTemplate> 
+            </CollectionView>
+        </RefreshView>
 
         <!-- Bottom nav -->
         <bottomnavbar:BottomNavBarView />

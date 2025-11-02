@@ -8,6 +8,7 @@ namespace PolkadotRoots.Pages;
 public partial class RegisterEventPage : PageTemplate
 {
     private readonly RegisterEventViewModel vm;
+    private readonly long? eventId;
 
     public RegisterEventPage()
     {
@@ -18,11 +19,31 @@ public partial class RegisterEventPage : PageTemplate
         var eventsApi = new CommunityEventsApiClient(http, new CommunityApiOptions());
         vm = new RegisterEventViewModel(storage, eventsApi);
         BindingContext = vm;
+        eventId = null;
     }
 
-    protected override void OnAppearing()
+    public RegisterEventPage(long eventId)
+    {
+        InitializeComponent();
+
+        var http = new HttpClient();
+        var storage = new StorageApiClient(http, new CommunityApiOptions());
+        var eventsApi = new CommunityEventsApiClient(http, new CommunityApiOptions());
+        vm = new RegisterEventViewModel(storage, eventsApi);
+        BindingContext = vm;
+        this.eventId = eventId;
+    }
+
+    protected override async void OnAppearing()
     {
         base.OnAppearing();
-        vm.Init();
+        if (eventId.HasValue)
+        {
+            await vm.InitForEditAsync(eventId.Value);
+        }
+        else
+        {
+            vm.Init();
+        }
     }
 }
