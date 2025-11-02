@@ -83,6 +83,11 @@ public partial class RegisterEventViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(SubmitButtonState))]
     private string? existingImagePath = null;
 
+    // New: multi organizer addresses bound to FormMultiAddressInputView
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(SubmitButtonState))]
+    private List<string> organisatorAddresses = new();
+
     private bool IsEdit => Id.HasValue;
 
     public ButtonStateEnum SubmitButtonState
@@ -119,7 +124,23 @@ public partial class RegisterEventViewModel : ObservableObject
         // Default address to currently selected account when creating new
         if (!IsEdit)
         {
-            Address = KeysModel.GetSubstrateKey("") ?? string.Empty;
+            var list = new List<string>();
+            if (KeysModel.HasSubstrateKey())
+            {
+                var key = KeysModel.GetSubstrateKey();
+                Address = key;
+                if (!string.IsNullOrWhiteSpace(key))
+                {
+                    list.Add(key);
+                }
+            }
+            else
+            {
+                Address = string.Empty;
+            }
+
+            // assign after we prepared the list so the UI picks it up
+            OrganisatorAddresses = list;
         }
     }
 
@@ -146,9 +167,15 @@ public partial class RegisterEventViewModel : ObservableObject
             Price = ev.Price ?? Price; // keep existing default if null
 
             if (ev.OrganizatorAddresses != null && ev.OrganizatorAddresses.Count > 0)
+            {
                 Address = ev.OrganizatorAddresses[0];
+                OrganisatorAddresses = new List<string>(ev.OrganizatorAddresses);
+            }
             else
-                Address = KeysModel.GetSubstrateKey("") ?? string.Empty;
+            {
+                Address = KeysModel.HasSubstrateKey() ? KeysModel.GetSubstrateKey() : string.Empty;
+                OrganisatorAddresses = string.IsNullOrWhiteSpace(Address) ? new() : new() { Address };
+            }
 
             ExistingImagePath = ev.Image;
 
@@ -221,7 +248,7 @@ public partial class RegisterEventViewModel : ObservableObject
             var dto = new EventDto
             {
                 Id = Id,
-                OrganizatorAddresses = new List<string> { account.Value },
+                OrganizatorAddresses = OrganisatorAddresses.Where(address => !string.IsNullOrWhiteSpace(address)).ToList(),
                 Name = Name,
                 Description = Description,
                 Image = imagePath,

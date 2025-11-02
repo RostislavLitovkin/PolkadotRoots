@@ -33,6 +33,27 @@ public class BackgroundVideoViewHandler : ViewHandler<BackgroundVideoView, UIVie
     {
         base.ConnectHandler(platformView);
         UpdateSource();
+
+        if (VirtualView != null)
+            VirtualView.SizeChanged += OnSizeChanged;
+    }
+
+    protected override void DisconnectHandler(UIView platformView)
+    {
+        if (VirtualView != null)
+            VirtualView.SizeChanged -= OnSizeChanged;
+
+        _player?.Pause();
+        _player = null;
+        _layer?.RemoveFromSuperLayer();
+        _layer = null;
+        base.DisconnectHandler(platformView);
+    }
+
+    void OnSizeChanged(object? sender, EventArgs e)
+    {
+        if (_layer != null && PlatformView != null)
+            _layer.Frame = PlatformView.Bounds;
     }
 
     static void MapSource(BackgroundVideoViewHandler handler, BackgroundVideoView view)
@@ -56,17 +77,11 @@ public class BackgroundVideoViewHandler : ViewHandler<BackgroundVideoView, UIVie
         _layer.Frame = PlatformView.Bounds;
         PlatformView.Layer.AddSublayer(_layer);
 
-        PlatformView.LayoutSubviews += (s, e) =>
-        {
-            if (_layer != null)
-                _layer.Frame = PlatformView.Bounds;
-        };
-
         if (VirtualView.IsLooping)
         {
             NSNotificationCenter.DefaultCenter.AddObserver(AVPlayerItem.DidPlayToEndTimeNotification, n =>
             {
-                _player?.Seek(CMTime.Zero);
+                _player?.Seek(CoreMedia.CMTime.Zero);
                 _player?.Play();
             }, _player.CurrentItem);
         }
