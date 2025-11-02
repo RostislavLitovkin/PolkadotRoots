@@ -98,7 +98,7 @@ namespace CommunityCore.Dotback
 
             var json = JsonSerializer.Serialize(wrapped, CommunityApiOptions.SerializerOptions);
             using var content = new StringContent(json, Encoding.UTF8, "application/json");
-            using var req = new HttpRequestMessage(HttpMethod.Patch, $"{BASEPATH}/{eventId}/{address}/status")
+            using var req = new HttpRequestMessage(HttpMethod.Patch, $"{BASEPATH}/{eventId}/{admin.Value}/status")
             {
                 Content = content
             };

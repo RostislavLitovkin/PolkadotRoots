@@ -4,12 +4,12 @@ using CommunityCore.Events;
 using CommunityCore.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using PlutoFramework.Components.Loading;
 using PlutoFramework.Components.TransactionAnalyzer;
 using PlutoFramework.Constants;
 using PlutoFramework.Model;
 using PlutoFramework.Model.HydraDX;
 using PolkadotRoots.Helpers;
-using Microsoft.Maui.ApplicationModel; // for Browser
 
 namespace PolkadotRoots.Pages;
 
@@ -68,16 +68,21 @@ public partial class DotbackDetailsViewModel : ObservableObject
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(StatusText))]
+    [NotifyPropertyChangedFor(nameof(ButtonIsVisible))]
     private bool paid;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(StatusText))]
+    [NotifyPropertyChangedFor(nameof(ButtonIsVisible))]
     private bool rejected;
 
     public string StatusText => Rejected ? "Rejected" : Paid ? "Paid" : "Pending";
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ButtonIsVisible))]
     private bool isOrganizer;
+
+    public bool ButtonIsVisible => IsOrganizer && !(Rejected || Paid);
 
     // Subscan link
     [ObservableProperty]
@@ -142,6 +147,8 @@ public partial class DotbackDetailsViewModel : ObservableObject
     [RelayCommand]
     public async Task PayAsync()
     {
+        var loading = DependencyService.Get<FullPageLoadingViewModel>();
+
         var token = CancellationToken.None;
         try
         {
@@ -170,6 +177,7 @@ public partial class DotbackDetailsViewModel : ObservableObject
                 client,
                 method,
                 showDAppView: false,
+                enableLoading: true,
                 token: token
             );
 
@@ -187,8 +195,11 @@ public partial class DotbackDetailsViewModel : ObservableObject
         }
         catch (Exception ex)
         {
+            Console.WriteLine(ex);
             await Shell.Current.DisplayAlert("Payment error", ex.Message, "OK");
         }
+
+        loading.IsVisible = false;
     }
 
     [RelayCommand]
