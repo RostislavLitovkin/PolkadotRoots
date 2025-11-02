@@ -6,6 +6,7 @@ using Hydration.NetApi.Generated;
 using PlutoFramework.Model;
 using PlutoFramework.Model.HydraDX;
 using PlutoFramework.Templates.PageTemplate;
+using CommunityCore.Admins;
 
 namespace PolkadotRoots.Pages;
 
@@ -21,8 +22,13 @@ public partial class EventDetailsPage : PageTemplate
         var eventsApi = new CommunityEventsApiClient(http, new CommunityApiOptions());
         var storage = new StorageApiClient(http, new CommunityApiOptions());
         var interestApi = new CommunityInterestApiClient(http, new CommunityApiOptions());
-        vm = new EventDetailsViewModel(eventsApi, storage, interestApi, id);
+        var adminsApi = new CommunityAdminsApiClient(http, new CommunityApiOptions());
+        vm = new EventDetailsViewModel(eventsApi, storage, interestApi, adminsApi, id);
         BindingContext = vm;
+
+
+
+        Console.WriteLine("My Address: " + KeysModel.GetSubstrateKey());
     }
 
     protected override async void OnAppearing()

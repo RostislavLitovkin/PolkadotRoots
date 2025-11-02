@@ -7,7 +7,7 @@
              xmlns:nft="clr-namespace:PlutoFramework.Components.Nft;assembly=PlutoFramework"
              x:Class="PolkadotRoots.Components.Dotbacks.DotbackItemView"
              x:Name="self"
-    HeightRequest="70">
+            HeightRequest="70">
     <card:ClickableCard CardPadding="0, 0, 0, 0"
                     x:Name="card">
         <card:ClickableCard.View>
@@ -47,7 +47,7 @@
 
                 <AbsoluteLayout HeightRequest="60"
                          Grid.Column="1"
-                            Grid.ColumnSpan="2"
+                            Grid.ColumnSpan="1"
                             x:Name="nftInfoLayout">
                     <Label Margin="5, 2.5, 5, 5"
                                AbsoluteLayout.LayoutBounds="0.5, 0, 1, 30"

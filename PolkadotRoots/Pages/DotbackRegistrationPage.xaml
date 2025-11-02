@@ -20,20 +20,23 @@
                 <Label Grid.Row="1" Grid.Column="1" Text="{Binding Address}" LineBreakMode="TailTruncation"/>
             </Grid>
 
-            <form:FormInputView Placeholder="Enter requested amount in USD"
+            <!-- Conversion info -->
+            <VerticalStackLayout Spacing="2" IsVisible="{Binding HasConversion}">
+                <Label Text="{Binding ConversionText}" FontSize="12" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}"/>
+                <Label Text="{Binding ConvertedEstimateText}" FontSize="14" FontAttributes="Bold" IsVisible="{Binding HasConvertedEstimate}"/>
+            </VerticalStackLayout>
+            
+            <Label Text="{Binding RequestedAmountTitleText}" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" />
+            <form:FormInputView Placeholder="Enter requested amount"
                                 KeyboardType="Numeric"
-                                Text="{Binding UsdAmount}" />
+                                Text="{Binding Amount}" />
 
-            <Label Text="Proof image" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" />
-            <Image Source="{Binding SelectedImageUrl}" HeightRequest="180" Aspect="AspectFill" IsVisible="{Binding HasImage}" />
-
-            <buttons:ElevatedButton Text="Choose image"
-                                    ButtonState="Enabled"
-                                    Command="{Binding PickImageCommand}"/>
+            <form:FormImageUploadView Title="Upload receipt"
+                                      ImageStream="{Binding ImageStream}" />
 
             <buttons:ElevatedButton Text="Submit"
                                     ButtonState="{Binding SubmitButtonState}"
-                                    Command="{Binding SubmitCommand}"/>
+                                    Command="{Binding SubmitCommand}" />
         </VerticalStackLayout>
     </ScrollView>
 </page:PageTemplate>

@@ -1,13 +1,15 @@
-using CommunityCore;
+﻿using CommunityCore;
 using CommunityCore.Dotback;
+using CommunityCore.Events;
 using CommunityCore.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using PlutoFramework.Components.Loading;
 using PlutoFramework.Components.TransactionAnalyzer;
 using PlutoFramework.Constants;
 using PlutoFramework.Model;
 using PlutoFramework.Model.HydraDX;
-using System.Numerics;
+using PolkadotRoots.Helpers;
 
 namespace PolkadotRoots.Pages;
 
@@ -27,10 +29,67 @@ public partial class DotbackDetailsViewModel : ObservableObject
     private string address = string.Empty;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ValueText))]
+    [NotifyPropertyChangedFor(nameof(LocalValueText))]
     private double usdAmount;
 
     [ObservableProperty]
     private string? imageUrl;
+
+    // Conversion state
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasConversion))]
+    [NotifyPropertyChangedFor(nameof(ValueText))]
+    [NotifyPropertyChangedFor(nameof(LocalValueText))]
+    private string? country;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasConversion))]
+    [NotifyPropertyChangedFor(nameof(LocalValueText))]
+    private string? currency;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasConversion))]
+    [NotifyPropertyChangedFor(nameof(ValueText))]
+    [NotifyPropertyChangedFor(nameof(LocalValueText))]
+    private string? currencySymbol;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasConversion))]
+    [NotifyPropertyChangedFor(nameof(ValueText))]
+    [NotifyPropertyChangedFor(nameof(LocalValueText))]
+    private decimal? usdToLocalRate;
+
+    public bool HasConversion => UsdToLocalRate.HasValue && !string.IsNullOrWhiteSpace(Currency) && !string.IsNullOrWhiteSpace(Country);
+
+    public string ValueText => HasConversion ? $"{UsdAmount:F2} USD ≈ {(decimal)UsdAmount / UsdToLocalRate!.Value:F2} {Currency}" : $"{UsdAmount:F2} USD";
+
+    public string LocalValueText => HasConversion ? $"{(decimal)UsdAmount / UsdToLocalRate!.Value:F2} {(string.IsNullOrWhiteSpace(CurrencySymbol) ? Currency : CurrencySymbol)}" : string.Empty;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(StatusText))]
+    [NotifyPropertyChangedFor(nameof(ButtonIsVisible))]
+    private bool paid;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(StatusText))]
+    [NotifyPropertyChangedFor(nameof(ButtonIsVisible))]
+    private bool rejected;
+
+    public string StatusText => Rejected ? "Rejected" : Paid ? "Paid" : "Pending";
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ButtonIsVisible))]
+    private bool isOrganizer;
+
+    public bool ButtonIsVisible => IsOrganizer && !(Rejected || Paid);
+
+    // Subscan link
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasSubscan))]
+    private string? subscanUrl;
+
+    public bool HasSubscan => !string.IsNullOrWhiteSpace(SubscanUrl);
 
     public DotbackDetailsViewModel(DotbackDto dto, StorageApiClient storage, CommunityDotbacksApiClient dotbacksApi)
     {
@@ -44,6 +103,9 @@ public partial class DotbackDetailsViewModel : ObservableObject
         EventId = dto.EventId;
         Address = dto.Address;
         UsdAmount = dto.UsdAmount;
+        Paid = dto.Paid;
+        Rejected = dto.Rejected;
+        SubscanUrl = dto.SubscanUrl;
 
         try
         {
@@ -53,11 +115,40 @@ public partial class DotbackDetailsViewModel : ObservableObject
             }
         }
         catch { }
+
+        // Load event country and conversion rate + organizer check
+        try
+        {
+            var http = new HttpClient();
+            var eventsApi = new CommunityEventsApiClient(http, new CommunityApiOptions());
+            var ev = await eventsApi.GetAsync(EventId);
+            if (ev != null)
+            {
+                Country = ev.Country;
+                var (currencySymbol, isoCurrencySymbol, exchangeRateLocalToUsd) = await CurrencyHelper.GetCurrencySymbolAndRateToUsdAsync(Country);
+                CurrencySymbol = currencySymbol;
+                Currency = isoCurrencySymbol; // ISO code
+                UsdToLocalRate = exchangeRateLocalToUsd;
+
+                try
+                {
+                    var myAddress = KeysModel.GetSubstrateKey();
+                    IsOrganizer = !string.IsNullOrWhiteSpace(myAddress) && (ev.OrganizatorAddresses?.Contains(myAddress) == true);
+                }
+                catch
+                {
+                    IsOrganizer = false;
+                }
+            }
+        }
+        catch { }
     }
 
     [RelayCommand]
     public async Task PayAsync()
     {
+        var loading = DependencyService.Get<FullPageLoadingViewModel>();
+
         var token = CancellationToken.None;
         try
         {
@@ -74,7 +165,7 @@ public partial class DotbackDetailsViewModel : ObservableObject
 
             decimal dotAmount = (decimal)UsdAmount / (decimal)dotSpotPrice;
 
-            BigInteger dotAmountPlanck = (BigInteger)((decimal)BigInteger.Pow(10, decimals) * dotAmount);
+            System.Numerics.BigInteger dotAmountPlanck = (System.Numerics.BigInteger)((decimal)System.Numerics.BigInteger.Pow(10, decimals) * dotAmount);
 
             var method = TransferModel.NativeTransfer(client, Address, dotAmountPlanck);
 
@@ -86,6 +177,7 @@ public partial class DotbackDetailsViewModel : ObservableObject
                 client,
                 method,
                 showDAppView: false,
+                enableLoading: true,
                 token: token
             );
 
@@ -103,8 +195,11 @@ public partial class DotbackDetailsViewModel : ObservableObject
         }
         catch (Exception ex)
         {
+            Console.WriteLine(ex);
             await Shell.Current.DisplayAlert("Payment error", ex.Message, "OK");
         }
+
+        loading.IsVisible = false;
     }
 
     [RelayCommand]
@@ -129,6 +224,22 @@ public partial class DotbackDetailsViewModel : ObservableObject
             {
                 await Shell.Current.DisplayAlert("Rejected", "Dotback status updated.", "OK");
             }
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlert("Error", ex.Message, "OK");
+        }
+    }
+
+    [RelayCommand]
+    private async Task OpenSubscanAsync()
+    {
+        if (string.IsNullOrWhiteSpace(SubscanUrl))
+            return;
+
+        try
+        {
+            await Browser.OpenAsync(SubscanUrl, BrowserLaunchMode.SystemPreferred);
         }
         catch (Exception ex)
         {

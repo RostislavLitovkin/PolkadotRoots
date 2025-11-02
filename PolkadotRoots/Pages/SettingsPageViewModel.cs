@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using PlutoFramework.Components.Account;
 using PlutoFramework.Components.Credits;
 using PlutoFramework.Components.Mnemonics;
+using PlutoFramework.Components.Nova;
 using PlutoFramework.Components.Password;
 using PlutoFramework.Components.Settings;
 using PlutoFramework.Model;
@@ -39,11 +40,17 @@ namespace PolkadotRoots.Pages
 
             await SQLiteModel.DeleteAllDatabasesAsync();
 
-            Application.Current.MainPage = new SetupPasswordPage { Navigation = App.NewMainPageNavigationAsync };
+            App.Current.MainPage = new OnboardingShell();
         }
 
         [RelayCommand]
         public Task DeveloperSettingsAsync() => Shell.Current.Navigation.PushAsync(new DeveloperSettingsPage());
+
+        [RelayCommand]
+        public Task ImportFromNovaAsync() => Shell.Current.Navigation.PushAsync(new NovaExportGuidePage());
+
+        [RelayCommand]
+        public Task ExportToNovaAsync() => Browser.Default.OpenAsync("https://docs.novawallet.io/nova-wallet-wiki/wallet-management/import-an-existing-wallet/import-via-passphrase", BrowserLaunchMode.SystemPreferred);
 
         [RelayCommand]
         public async Task ShowMnemonicsAsync()

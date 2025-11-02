@@ -2,6 +2,7 @@ using CommunityCore.Events;
 using CommunityCore.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using PlutoFramework.Components.Loading;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -33,15 +34,21 @@ public partial class EventsViewModel : ObservableObject
     [ObservableProperty]
     private bool busy = false;
 
+    [ObservableProperty]
+    private bool isRefreshing = false;
+
     public bool Initialized { get; private set; }
     public ObservableCollection<EventListItem> Items { get; } = new();
 
     [RelayCommand]
     public async Task OpenDetailsAsync(object param)
     {
+        var loading = DependencyService.Get<FullPageLoadingViewModel>();
+
+        loading.IsVisible = true;
         try
         {
-            long? id = null;
+            long? id = null; 
             switch (param)
             {
                 case long l: id = l; break;
@@ -54,12 +61,34 @@ public partial class EventsViewModel : ObservableObject
             }
         }
         catch { /* ignore navigation errors */ }
+        loading.IsVisible = false;
     }
 
     public EventsViewModel(CommunityEventsApiClient api, StorageApiClient storage)
     {
         this.api = api;
         this.storage = storage;
+    }
+
+    [RelayCommand]
+    private async Task RefreshAsync()
+    {
+        if (Busy) return;
+        IsRefreshing = true;
+        try
+        {
+            // Reset paging and content
+            pageIndex = 0;
+            ReachedEnd = false;
+            Initialized = false;
+            Items.Clear();
+
+            await LoadNextPageAsync();
+        }
+        finally
+        {
+            IsRefreshing = false;
+        }
     }
 
     public async Task LoadNextPageAsync()

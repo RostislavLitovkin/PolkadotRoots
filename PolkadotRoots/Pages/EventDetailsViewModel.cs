@@ -4,7 +4,9 @@ using CommunityCore.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PlutoFramework.Model;
+using Substrate.NetApi;
 using System.Collections.ObjectModel;
+using CommunityCore.Admins;
 
 namespace PolkadotRoots.Pages;
 
@@ -13,6 +15,7 @@ public partial class EventDetailsViewModel : ObservableObject
     private readonly CommunityEventsApiClient api;
     private readonly StorageApiClient storage;
     private readonly CommunityInterestApiClient interestApi;
+    private readonly CommunityAdminsApiClient adminsApi;
     private readonly long id;
 
     [ObservableProperty] private string title = string.Empty;
@@ -26,6 +29,17 @@ public partial class EventDetailsViewModel : ObservableObject
     [ObservableProperty] private string? lumaUrl;
     [ObservableProperty] private string? website;
     [ObservableProperty] private string capacityText = string.Empty;
+    [ObservableProperty] private string country = string.Empty;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsOrganizer))]
+    [NotifyPropertyChangedFor(nameof(OrganizersPolkadotFormatted))]
+    [NotifyPropertyChangedFor(nameof(IsOrganizerOrAdmin))]
+    private ObservableCollection<string> organizers = new();
+
+    public ObservableCollection<string> OrganizersPolkadotFormatted => new(
+        Organizers.Select(address => Utils.GetAddressFrom(Utils.GetPublicKeyFrom(address), ss58Prefix: 0))
+    );
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(InterestedText))]
@@ -38,6 +52,14 @@ public partial class EventDetailsViewModel : ObservableObject
     private bool isInterested = false;
 
     public bool InterestButtonIsVisible => !IsInterested;
+
+    public bool IsOrganizer => Organizers.Contains(KeysModel.GetSubstrateKey());
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsOrganizerOrAdmin))]
+    private bool isAdmin;
+
+    public bool IsOrganizerOrAdmin => IsOrganizer || IsAdmin;
 
     [RelayCommand]
     public async Task InterestAsync()
@@ -72,7 +94,7 @@ public partial class EventDetailsViewModel : ObservableObject
 
 
     [RelayCommand]
-    public Task DotbackAsync() => Shell.Current.Navigation.PushAsync(new DotbackRegistrationPage(id, Title));
+    public Task DotbackAsync() => Shell.Current.Navigation.PushAsync(new DotbackRegistrationPage(id, Title, Country));
 
     [RelayCommand]
     public async Task ManageDotbacksAsync()
@@ -88,13 +110,48 @@ public partial class EventDetailsViewModel : ObservableObject
     }
 
 
-    public ObservableCollection<string> Organizers { get; } = new();
+    [RelayCommand]
+    public Task EditEventAsync() => Shell.Current.Navigation.PushAsync(new RegisterEventPage(id));
 
-    public EventDetailsViewModel(CommunityEventsApiClient api, StorageApiClient storage, CommunityInterestApiClient interestApi, long id)
+    [RelayCommand]
+    public async Task DeleteEventAsync()
+    {
+        if (!IsOrganizerOrAdmin)
+            return;
+
+        var confirm = await Shell.Current.DisplayAlert("Delete event", "Are you sure you want to delete this event?", "Delete", "Cancel");
+        if (!confirm)
+            return;
+
+        try
+        {
+            var account = await KeysModel.GetAccountAsync();
+            if (account is null)
+                return;
+
+            var ok = await api.DeleteAsync(account, id);
+            if (ok)
+            {
+                await Shell.Current.DisplayAlert("Deleted", "Event has been deleted.", "OK");
+                await Shell.Current.Navigation.PopAsync();
+            }
+            else
+            {
+                await Shell.Current.DisplayAlert("Not found", "Event was not found.", "OK");
+            }
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlert("Error", ex.Message, "OK");
+        }
+    }
+
+    public EventDetailsViewModel(CommunityEventsApiClient api, StorageApiClient storage, CommunityInterestApiClient interestApi, CommunityAdminsApiClient adminsApi, long id)
     {
         this.api = api;
         this.storage = storage;
         this.interestApi = interestApi;
+        this.adminsApi = adminsApi;
         this.id = id;
     }
 
@@ -125,6 +182,7 @@ public partial class EventDetailsViewModel : ObservableObject
     {
         var eventTask = api.GetAsync(id);
         var interestTask = interestApi.ListAsync(id);
+        var adminsTask = adminsApi.GetAllAsync();
 
         var ev = await eventTask;
         if (ev == null) return;
@@ -140,10 +198,10 @@ public partial class EventDetailsViewModel : ObservableObject
         PriceText = string.IsNullOrWhiteSpace(ev.Price) ? "See details" : ev.Price;
         LumaUrl = ev.LumaUrl; Website = ev.Website;
         CapacityText = ev.Capacity.HasValue ? ev.Capacity.Value.ToString() : string.Empty;
+        Country = ev.Country!;
 
-        Organizers.Clear();
         if (ev.OrganizatorAddresses != null)
-            foreach (var a in ev.OrganizatorAddresses) Organizers.Add(a);
+            Organizers = new ObservableCollection<string>(ev.OrganizatorAddresses);
 
         BannerImage = await storage.GetImageAsync(ev.Image!);
 
@@ -154,6 +212,15 @@ public partial class EventDetailsViewModel : ObservableObject
         var address = KeysModel.GetSubstrateKey("");
         IsInterested = inter?.Any(i => i.Address == address) ?? false;
 
+        try
+        {
+            var admins = await adminsTask;
+            IsAdmin = admins?.Contains(address) == true;
+        }
+        catch
+        {
+            IsAdmin = false;
+        }
     }
 
     private static (string start, string end, string subtitle) FormatTimes(long? start, long? end, string venue)

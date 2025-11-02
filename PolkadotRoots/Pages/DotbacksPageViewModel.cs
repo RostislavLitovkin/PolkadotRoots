@@ -2,6 +2,7 @@ using CommunityCore.Dotback;
 using CommunityCore.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Substrate.NetApi;
 using System.Collections.ObjectModel;
 
 namespace PolkadotRoots.Pages;
@@ -12,6 +13,7 @@ public sealed class DotbackListItem
     public double UsdRequested => Dotback.UsdAmount;
     public long EventId => Dotback.EventId;
     public string Address => Dotback.Address;
+    public string PolkadotFormattedAddress => Utils.GetAddressFrom(Utils.GetPublicKeyFrom(Dotback.Address), ss58Prefix: 0);
     public bool Paid => Dotback.Paid;
     public bool Rejected => Dotback.Rejected;
     public DotbackDto Dotback { get; init; } = null!;

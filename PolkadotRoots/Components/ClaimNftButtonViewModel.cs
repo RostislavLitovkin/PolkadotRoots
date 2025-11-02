@@ -13,7 +13,13 @@ namespace PolkadotRoots.Components
 
         [RelayCommand]
         public async Task OnButtonPressedAsync() {
-            await Shell.Current.Navigation.PushAsync(new WebViewPage($"https://dotmemo.xyz/claim/{code}?address={Utils.GetAddressFrom(KeysModel.GetPublicKeyBytes(), 0)}"));
+            if (string.IsNullOrWhiteSpace(Code))
+            {
+                return;
+            }
+
+            var uri = $"https://dotmemo.xyz/claim/{Code}?address={Utils.GetAddressFrom(KeysModel.GetPublicKeyBytes(), 0)}";
+            await Browser.Default.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
         }
     }
 }

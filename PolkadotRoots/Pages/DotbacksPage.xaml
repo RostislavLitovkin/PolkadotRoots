@@ -25,7 +25,7 @@
              xmlns:sumsub="clr-namespace:PlutoFramework.Components.Sumsub;assembly=PlutoFramework"
              xmlns:extrinsic="clr-namespace:PlutoFramework.Components.Extrinsic;assembly=PlutoFramework"
              BackgroundColor="{AppThemeBinding Light=White, Dark=#0a0a0a}"
-                   x:Name="self"
+             x:Name="self"
              Shell.PresentationMode="ModalNotAnimated"
              HideSoftInputOnTapped="True">
 
@@ -36,7 +36,6 @@
                         RemainingItemsThreshold="6"
                         RemainingItemsThresholdReached="OnRemainingItemsThresholdReached"
                         SelectionMode="None"
-                        
                         AbsoluteLayout.LayoutBounds="0.5, 0.5, 1, 1"
                         AbsoluteLayout.LayoutFlags="All">
             <CollectionView.ItemsLayout>
@@ -53,7 +52,7 @@
             </CollectionView.Footer>
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <dotbacks:DotbackItemView Title="{Binding Address}"
+                    <dotbacks:DotbackItemView Title="{Binding PolkadotFormattedAddress}"
                                               ImageSource="{Binding ImageSource}"
                                               UsdRequested="{Binding UsdRequested}"
                                               Paid="{Binding Paid}"
@@ -64,23 +63,5 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-
-        <!-- Global overlays -->
-        <extrinsic:ExtrinsicStatusStackLayout />
-        <vault:VaultSignView />
-        <staking:StakingRegistrationRequestView />
-        <messagepopup:MessagePopupView />
-        <addressview:AddressQrCodeView />
-        <transferview:TransferView />
-        <transactionrequest:MessageSignRequestView />
-        <dappconnection:DAppConnectionRequestView />
-        <account:NoAccountPopup />
-        <kilt:NoDidPopupView />
-        <sumsub:NoKYCPopupView />
-        <assetselect:AssetSelectView />
-        <networkselect:NetworkSelectPopup />
-        <txanalyzer:TransactionAnalyzerConfirmationView />
-        <password:EnterPasswordPopupView />
-        <loading:FullPageLoadingView />
     </AbsoluteLayout>
 </page:PageTemplate>

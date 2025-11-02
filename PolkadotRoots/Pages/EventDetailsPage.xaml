@@ -71,7 +71,18 @@
 
         <buttons:ElevatedButton Text="Manage DOT-backs"
                                 ButtonState="Enabled"
+                                IsVisible="{Binding IsOrganizer}"
                                 Command="{Binding ManageDotbacksCommand}" />
+
+        <buttons:ElevatedButton Text="Edit event details"
+                        ButtonState="Enabled"
+                        IsVisible="{Binding IsOrganizer}"
+                        Command="{Binding EditEventCommand}" />
+
+        <buttons:ElevatedButton Text="Delete event"
+                                ButtonState="Enabled"
+                                IsVisible="{Binding IsOrganizerOrAdmin}"
+                                Command="{Binding DeleteEventCommand}" />
 
         <!-- About -->
         <VerticalStackLayout>
@@ -120,23 +131,17 @@
         </card:Card>
 
         <!-- Organizers section -->
-        <card:Card>
-            <card:Card.View>
-                <VerticalStackLayout  Spacing="10" Padding="0,15,0,15">
-                    <Label Text="Organizers" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" />
-                    <CollectionView ItemsSource="{Binding Organizers}" SelectionMode="None">
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate>
-                                <Grid ColumnDefinitions="*,Auto" Padding="0,6">
-                                    <Label Text="{Binding .}" LineBreakMode="TailTruncation" />
-                                    <Button Grid.Column="1" Text=">" Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenOrganizerCommand}" CommandParameter="{Binding .}" />
-                                </Grid>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>
-                </VerticalStackLayout>
-            </card:Card.View>
-        </card:Card>
+        <Label Text="Organizers" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" />
+        
+        <CollectionView ItemsSource="{Binding OrganizersPolkadotFormatted}" SelectionMode="None">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <addressview:SubscanAddressView Title="Address: "
+                                                                Address="{Binding .}"
+                                                                AddressText="{Binding .}"/>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
 
         <!-- Maps link -->
         <HorizontalStackLayout Grid.Row="3" Spacing="12" Padding="0,12,0,0">

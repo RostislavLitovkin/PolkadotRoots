@@ -1,4 +1,5 @@
 ﻿using PlutoFramework.Model;
+using PlutoFrameworkCore;
 using PolkadotRoots.Components.BottomNavBar;
 
 namespace PolkadotRoots
@@ -23,7 +24,6 @@ namespace PolkadotRoots
             NavigationModel.NavigateAfterAccountCreation = NewMainPageNavigationAsync;
 
             InitializeComponent();
-
 
             DependencyService.Register<BottomNavBarViewModel>();
 
