@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.Input;
 using PlutoFramework.Model;
 using Substrate.NetApi;
 using System.Collections.ObjectModel;
+using CommunityCore.Admins;
 
 namespace PolkadotRoots.Pages;
 
@@ -14,6 +15,7 @@ public partial class EventDetailsViewModel : ObservableObject
     private readonly CommunityEventsApiClient api;
     private readonly StorageApiClient storage;
     private readonly CommunityInterestApiClient interestApi;
+    private readonly CommunityAdminsApiClient adminsApi;
     private readonly long id;
 
     [ObservableProperty] private string title = string.Empty;
@@ -32,6 +34,7 @@ public partial class EventDetailsViewModel : ObservableObject
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsOrganizer))]
     [NotifyPropertyChangedFor(nameof(OrganizersPolkadotFormatted))]
+    [NotifyPropertyChangedFor(nameof(IsOrganizerOrAdmin))]
     private ObservableCollection<string> organizers = new();
 
     public ObservableCollection<string> OrganizersPolkadotFormatted => new(
@@ -51,6 +54,12 @@ public partial class EventDetailsViewModel : ObservableObject
     public bool InterestButtonIsVisible => !IsInterested;
 
     public bool IsOrganizer => Organizers.Contains(KeysModel.GetSubstrateKey());
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsOrganizerOrAdmin))]
+    private bool isAdmin;
+
+    public bool IsOrganizerOrAdmin => IsOrganizer || IsAdmin;
 
     [RelayCommand]
     public async Task InterestAsync()
@@ -104,11 +113,45 @@ public partial class EventDetailsViewModel : ObservableObject
     [RelayCommand]
     public Task EditEventAsync() => Shell.Current.Navigation.PushAsync(new RegisterEventPage(id));
 
-    public EventDetailsViewModel(CommunityEventsApiClient api, StorageApiClient storage, CommunityInterestApiClient interestApi, long id)
+    [RelayCommand]
+    public async Task DeleteEventAsync()
+    {
+        if (!IsOrganizerOrAdmin)
+            return;
+
+        var confirm = await Shell.Current.DisplayAlert("Delete event", "Are you sure you want to delete this event?", "Delete", "Cancel");
+        if (!confirm)
+            return;
+
+        try
+        {
+            var account = await KeysModel.GetAccountAsync();
+            if (account is null)
+                return;
+
+            var ok = await api.DeleteAsync(account, id);
+            if (ok)
+            {
+                await Shell.Current.DisplayAlert("Deleted", "Event has been deleted.", "OK");
+                await Shell.Current.Navigation.PopAsync();
+            }
+            else
+            {
+                await Shell.Current.DisplayAlert("Not found", "Event was not found.", "OK");
+            }
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlert("Error", ex.Message, "OK");
+        }
+    }
+
+    public EventDetailsViewModel(CommunityEventsApiClient api, StorageApiClient storage, CommunityInterestApiClient interestApi, CommunityAdminsApiClient adminsApi, long id)
     {
         this.api = api;
         this.storage = storage;
         this.interestApi = interestApi;
+        this.adminsApi = adminsApi;
         this.id = id;
     }
 
@@ -139,6 +182,7 @@ public partial class EventDetailsViewModel : ObservableObject
     {
         var eventTask = api.GetAsync(id);
         var interestTask = interestApi.ListAsync(id);
+        var adminsTask = adminsApi.GetAllAsync();
 
         var ev = await eventTask;
         if (ev == null) return;
@@ -168,6 +212,15 @@ public partial class EventDetailsViewModel : ObservableObject
         var address = KeysModel.GetSubstrateKey("");
         IsInterested = inter?.Any(i => i.Address == address) ?? false;
 
+        try
+        {
+            var admins = await adminsTask;
+            IsAdmin = admins?.Contains(address) == true;
+        }
+        catch
+        {
+            IsAdmin = false;
+        }
     }
 
     private static (string start, string end, string subtitle) FormatTimes(long? start, long? end, string venue)

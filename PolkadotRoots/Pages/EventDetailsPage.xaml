@@ -79,6 +79,11 @@
                         IsVisible="{Binding IsOrganizer}"
                         Command="{Binding EditEventCommand}" />
 
+        <buttons:ElevatedButton Text="Delete event"
+                                ButtonState="Enabled"
+                                IsVisible="{Binding IsOrganizerOrAdmin}"
+                                Command="{Binding DeleteEventCommand}" />
+
         <!-- About -->
         <VerticalStackLayout>
             <Label Text="About" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" />

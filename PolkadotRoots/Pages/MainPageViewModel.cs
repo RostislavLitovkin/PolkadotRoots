@@ -6,6 +6,7 @@ using PlutoFramework.Components.UniversalScannerView;
 using PlutoFramework.Components.Vault;
 using PlutoFramework.Model;
 using Plutonication;
+using CommunityCore.Admins;
 
 namespace PolkadotRoots.Pages
 {
@@ -20,6 +21,44 @@ namespace PolkadotRoots.Pages
         [ObservableProperty]
         private bool isRefreshing = false;
 
+        [ObservableProperty]
+        private bool isAdmin = false;
+
+        public MainPageViewModel()
+        {
+            // fire and forget admin check
+            _ = RefreshIsAdminAsync();
+        }
+
+        private async Task RefreshIsAdminAsync()
+        {
+            try
+            {
+                if (!KeysModel.HasSubstrateKey())
+                {
+                    IsAdmin = false;
+                    return;
+                }
+
+                var myAddress = KeysModel.GetSubstrateKey();
+
+                if (string.IsNullOrWhiteSpace(myAddress) || myAddress.StartsWith("Error"))
+                {
+                    IsAdmin = false;
+                    return;
+                }
+
+                var client = new CommunityAdminsApiClient(new HttpClient());
+                var admins = await client.GetAllAsync();
+
+                IsAdmin = admins?.Contains(myAddress) == true;
+            }
+            catch
+            {
+                IsAdmin = false;
+            }
+        }
+
         [RelayCommand]
         public async Task RefreshAsync()
         {
@@ -30,6 +69,9 @@ namespace PolkadotRoots.Pages
             await Task.Delay(5000);
 
             IsRefreshing = false;
+
+            // also refresh admin flag on manual refresh
+            _ = RefreshIsAdminAsync();
         }
 
         [RelayCommand]

@@ -57,9 +57,12 @@
                     <components:ClaimNftButtonView />
 
                     <buttons:ElevatedButton Text="Register Event"
-                                            Command="{Binding RegisterEventCommand}"/>
+                                            Command="{Binding RegisterEventCommand}"
+                                            IsVisible="{Binding IsAdmin}"/>
 
-                    <bohemia:BohemiaNftOwnedListView />
+
+
+                    <nft:NftOwnedListView />
 
                 </VerticalStackLayout>
             </ScrollView>
