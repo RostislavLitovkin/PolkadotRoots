@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
     <x:String x:Key="ButtonFontFamily">UnboundedBold</x:String>
+    <x:String x:Key="DefaultEndpoints">[Polkadot, PolkadotAssetHub, Hydration]</x:String>
     
     <Style TargetType="ActivityIndicator">
         <Setter Property="Color" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" />

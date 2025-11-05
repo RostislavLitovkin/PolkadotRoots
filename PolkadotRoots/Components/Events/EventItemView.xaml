@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PolkadotRoots.Components.Events.EventItemView"
+             
+             xmlns:card="clr-namespace:PlutoFramework.Components.Card;assembly=PlutoFramework"
+             x:Name="self"
+             HorizontalOptions="Fill">
+    <card:ClickableCard CardPadding="0, 0, 0, 0">
+    <card:ClickableCard.GestureRecognizers>
+      <TapGestureRecognizer Command="{Binding Source={x:Reference self}, Path=Command}"
+                            CommandParameter="{Binding Source={x:Reference self}, Path=CommandParameter}" />
+    </card:ClickableCard.GestureRecognizers>
+    <card:ClickableCard.View>
+            <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*">
+                <!-- Banner -->
+                <Grid HeightRequest="200">
+                    <Image Source="{Binding Source={x:Reference self}, Path=ImageSource}" Aspect="AspectFill" />
+                </Grid>
+
+                <!-- Content -->
+                <VerticalStackLayout Grid.Row="1" Spacing="4" Padding="16">
+                    <Label Text="{Binding Source={x:Reference self}, Path=Title}"
+                          FontFamily="UnboundedBold"
+                           FontAttributes="Bold"
+                           FontSize="20"
+                           TextColor="{AppThemeBinding Light=#0f0f12, Dark=#f6f6f8}"/>
+
+                  <Label Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding Source={x:Reference self}, Path=Location}" FontSize="12" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
+
+                </VerticalStackLayout>
+
+                <!-- Quick details row -->
+                <Grid Grid.Row="2" Padding="16,0,16,14" ColumnDefinitions="*,*" RowDefinitions="Auto,Auto">
+                    <Label Grid.Row="0" Grid.Column="0" Text="Start" FontSize="12" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
+                    <Label Grid.Row="1" Grid.Column="0" Text="{Binding Source={x:Reference self}, Path=StartText}" FontSize="14" TextColor="{AppThemeBinding Light=#0f0f12, Dark=#f6f6f8}" />
+                    <Label Grid.Row="0" Grid.Column="1" Text="End" FontSize="12" HorizontalTextAlignment="End" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
+                    <Label Grid.Row="1" Grid.Column="1" Text="{Binding Source={x:Reference self}, Path=EndText}" FontSize="14" HorizontalTextAlignment="End" TextColor="{AppThemeBinding Light=#0f0f12, Dark=#f6f6f8}" />
+                </Grid>
+            </Grid>
+        </card:ClickableCard.View >
+  </card:ClickableCard >
+
+</ContentView>

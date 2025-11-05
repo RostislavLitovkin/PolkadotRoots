@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<page:PageTemplate xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PolkadotRoots.Pages.DotbackRegistrationPage"
+                   xmlns:form="clr-namespace:PlutoFramework.Components.Form;assembly=PlutoFramework"
+             xmlns:page="clr-namespace:PlutoFramework.Templates.PageTemplate;assembly=PlutoFramework"
+             xmlns:buttons="clr-namespace:PlutoFramework.Components.Buttons;assembly=PlutoFramework"
+             Title="{Binding Title}"
+             BackgroundColor="{AppThemeBinding Light=#ffffff, Dark=#0f0f12}">
+    <ScrollView>
+        <VerticalStackLayout Padding="18" Spacing="16">
+            <Label Text="Event" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" />
+            <Label Text="{Binding EventName}" FontFamily="UnboundedBold" FontSize="20"/>
+
+            <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto" ColumnSpacing="10" RowSpacing="8">
+                <Label Grid.Row="0" Grid.Column="0" Text="Event ID:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
+                <Label Grid.Row="0" Grid.Column="1" Text="{Binding EventId}" />
+
+                <Label Grid.Row="1" Grid.Column="0" Text="Your Address:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
+                <Label Grid.Row="1" Grid.Column="1" Text="{Binding Address}" LineBreakMode="TailTruncation"/>
+            </Grid>
+
+            <!-- Conversion info -->
+            <VerticalStackLayout Spacing="2" IsVisible="{Binding HasConversion}">
+                <Label Text="{Binding ConversionText}" FontSize="12" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}"/>
+                <Label Text="{Binding ConvertedEstimateText}" FontSize="14" FontAttributes="Bold" IsVisible="{Binding HasConvertedEstimate}"/>
+            </VerticalStackLayout>
+            
+            <Label Text="{Binding RequestedAmountTitleText}" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" />
+            <form:FormInputView Placeholder="Enter requested amount"
+                                KeyboardType="Numeric"
+                                Text="{Binding Amount}" />
+
+            <form:FormImageUploadView Title="Upload receipt"
+                                      ImageStream="{Binding ImageStream}" />
+
+            <buttons:ElevatedButton Text="Submit"
+                                    ButtonState="{Binding SubmitButtonState}"
+                                    Command="{Binding SubmitCommand}" />
+        </VerticalStackLayout>
+    </ScrollView>
+</page:PageTemplate>

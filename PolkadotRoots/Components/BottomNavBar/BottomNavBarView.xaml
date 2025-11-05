@@ -31,11 +31,11 @@
         </local:NavBarButtonView>
         <local:NavBarButtonView
             Grid.Column="2"
-            Title="Play Wud"
+            Title="Events"
             IconUnselected="play.png"
             IconSelected="play_active.png"
-            IsSelected="{Binding WudIsSelected}"
-            Command="{Binding SelectWudCommand}">
+            IsSelected="{Binding EventsIsSelected}"
+            Command="{Binding SelectEventsCommand}">
         </local:NavBarButtonView>
     </local:PageBottomBarView>
 </ContentView>

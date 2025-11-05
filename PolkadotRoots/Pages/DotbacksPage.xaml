@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<page:PageTemplate xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PolkadotRoots.Pages.DotbacksPage"
+             Title="Dotbacks"
+             xmlns:page="clr-namespace:PlutoFramework.Templates.PageTemplate;assembly=PlutoFramework"
+             xmlns:dotbacks="clr-namespace:PolkadotRoots.Components.Dotbacks"
+             xmlns:customlayouts="clr-namespace:PlutoFramework.Components.CustomLayouts;assembly=PlutoFramework"
+             xmlns:txanalyzer="clr-namespace:PlutoFramework.Components.TransactionAnalyzer;assembly=PlutoFramework"
+             xmlns:networkselect="clr-namespace:PlutoFramework.Components.NetworkSelect;assembly=PlutoFramework"
+             xmlns:transferview="clr-namespace:PlutoFramework.Components.TransferView;assembly=PlutoFramework"
+             xmlns:dappconnection="clr-namespace:PlutoFramework.Components.DAppConnection;assembly=PlutoFramework"
+             xmlns:messagepopup="clr-namespace:PlutoFramework.Components.MessagePopup;assembly=PlutoFramework"
+             xmlns:transactionrequest="clr-namespace:PlutoFramework.Components.TransactionRequest;assembly=PlutoFramework"
+             xmlns:addressview="clr-namespace:PlutoFramework.Components.AddressView;assembly=PlutoFramework"
+             xmlns:staking="clr-namespace:PlutoFramework.Components.Staking;assembly=PlutoFramework"
+             xmlns:navigationbar="clr-namespace:PlutoFramework.Components.NavigationBar;assembly=PlutoFramework"
+             xmlns:password="clr-namespace:PlutoFramework.Components.Password;assembly=PlutoFramework"
+             xmlns:assetselect="clr-namespace:PlutoFramework.Components.AssetSelect;assembly=PlutoFramework"
+             xmlns:vault="clr-namespace:PlutoFramework.Components.Vault;assembly=PlutoFramework"
+             xmlns:changelayoutrequest="clr-namespace:PlutoFramework.Components.ChangeLayoutRequest;assembly=PlutoFramework"
+             xmlns:account="clr-namespace:PlutoFramework.Components.Account;assembly=PlutoFramework"
+             xmlns:kilt="clr-namespace:PlutoFramework.Components.Kilt;assembly=PlutoFramework"
+             xmlns:loading="clr-namespace:PlutoFramework.Components.Loading;assembly=PlutoFramework"
+             xmlns:sumsub="clr-namespace:PlutoFramework.Components.Sumsub;assembly=PlutoFramework"
+             xmlns:extrinsic="clr-namespace:PlutoFramework.Components.Extrinsic;assembly=PlutoFramework"
+             BackgroundColor="{AppThemeBinding Light=White, Dark=#0a0a0a}"
+             x:Name="self"
+             Shell.PresentationMode="ModalNotAnimated"
+             HideSoftInputOnTapped="True">
+
+    <AbsoluteLayout AbsoluteLayout.LayoutBounds="0.5, 0.5, 1, 1" AbsoluteLayout.LayoutFlags="All">
+
+        <CollectionView x:Name="DotbacksCollection"
+                        ItemsSource="{Binding Items}"
+                        RemainingItemsThreshold="6"
+                        RemainingItemsThresholdReached="OnRemainingItemsThresholdReached"
+                        SelectionMode="None"
+                        AbsoluteLayout.LayoutBounds="0.5, 0.5, 1, 1"
+                        AbsoluteLayout.LayoutFlags="All">
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="15" />
+            </CollectionView.ItemsLayout>
+            <CollectionView.Header>
+                <VerticalStackLayout MinimumHeightRequest="15" />
+            </CollectionView.Header>
+            <CollectionView.Footer>
+                <StackLayout HeightRequest="200">
+                    <customlayouts:LoadingItemView HeightRequest="80" Margin="20,0,20,0" IsVisible="{Binding Busy}"/>
+                    <customlayouts:TransparentItemView Text="No dotbacks" HeightRequest="80" Margin="20,0,20,0" IsVisible="{Binding NoItems}" />
+                </StackLayout>
+            </CollectionView.Footer>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <dotbacks:DotbackItemView Title="{Binding PolkadotFormattedAddress}"
+                                              ImageSource="{Binding ImageSource}"
+                                              UsdRequested="{Binding UsdRequested}"
+                                              Paid="{Binding Paid}"
+                                              Rejected="{Binding Rejected}"
+                                              Command="{Binding Source={x:Reference self}, Path=BindingContext.OpenDetailsCommand}"
+                                              CommandParameter="{Binding .}"
+                                              Margin="20,0,20,0"/>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </AbsoluteLayout>
+</page:PageTemplate>

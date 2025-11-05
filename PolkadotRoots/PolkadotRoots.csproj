@@ -12,14 +12,14 @@
     <UseMauiEssentials>false</UseMauiEssentials>
 
 		<!-- Display name -->
-		<ApplicationTitle>Polkadot Roots</ApplicationTitle>
+		<ApplicationTitle>Polkadot Community</ApplicationTitle>
 
 		<!-- App Identifier -->
 		<ApplicationId>app.plutolabs.polkadotcommunity</ApplicationId>
 
 		<!-- Versions -->
-		<ApplicationDisplayVersion>0.1</ApplicationDisplayVersion>
-		<ApplicationVersion>1</ApplicationVersion>
+		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+		<ApplicationVersion>2</ApplicationVersion>
 
 		<!-- To develop, package, and publish an app to the Microsoft Store, see: https://aka.ms/MauiTemplateUnpackaged -->
 		<WindowsPackageType>None</WindowsPackageType>
@@ -32,15 +32,24 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
-	<ItemGroup>
-		<!-- App Icon -->
-        <MauiIcon Include="Resources\AppIcon\appicon.png">
-            <Color>#ff2670</Color>
-        </MauiIcon>
-        
-		<!-- Splash Screen -->
-        <MauiSplashScreen Include="Resources\Splash\splash.png" Color="#ff2670" BaseSize="128,128" />
-        
+
+
+  <ItemGroup Condition="'$(TargetFramework)'=='net9.0-android35.0'">
+    <!-- App Icon -->
+    <MauiIcon Include="Resources\AppIcon\appicon.png" Color="#ff2670" ForegroundScale="0.65" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'!='net9.0-android35.0'">
+    <!-- App Icon -->
+    <MauiIcon Include="Resources\AppIcon\appicon.png" Color="#ff2670" />
+  </ItemGroup>
+
+
+
+  <ItemGroup>
+    <!-- Splash Screen -->
+    <MauiSplashScreen Include="Resources\Splash\splash.png" Color="#ff2670" BaseSize="128,128" />
+
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
 
@@ -52,6 +61,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\CommunityCore\CommunityCore.csproj" />
 	  <ProjectReference Include="..\PlutoFramework\PlutoFramework\PlutoFramework.csproj" />
 	</ItemGroup>
 
@@ -60,7 +70,10 @@
 	</ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Maui" Version="9.0.2" />
     <PackageReference Include="Microsoft.Maui.Controls" Version="9.0.81" />
+    <PackageReference Include="Plugin.Fingerprint" Version="3.0.0-beta.1" />
+    <PackageReference Include="SkiaSharp" Version="3.119.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -69,9 +82,6 @@
     </Compile>
     <Compile Update="Components\BottomNavBar\NavBarButtonView.xaml.cs">
       <DependentUpon>NavBarButtonView.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Pages\WudPage.xaml.cs">
-      <DependentUpon>WudPage.xaml</DependentUpon>
     </Compile>
     <Compile Update="Pages\AssetsPage.xaml.cs">
       <DependentUpon>AssetsPage.xaml</DependentUpon>
@@ -88,6 +98,12 @@
     <MauiXaml Update="Components\ClaimNftButtonView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
+    <MauiXaml Update="Components\Dotbacks\DotbackItemView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
+    <MauiXaml Update="Components\Events\EventItemView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
     <MauiXaml Update="Components\PlayWudButtonView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
@@ -97,10 +113,25 @@
     <MauiXaml Update="OnboardingShell.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
-    <MauiXaml Update="Pages\WelcomePage.xaml">
+    <MauiXaml Update="Pages\DotbackDetailsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
-    <MauiXaml Update="Pages\WudPage.xaml">
+    <MauiXaml Update="Pages\DotbackRegistrationPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
+    <MauiXaml Update="Pages\DotbacksPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
+    <MauiXaml Update="Pages\EventDetailsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
+    <MauiXaml Update="Pages\EventsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
+    <MauiXaml Update="Pages\MyDotbacksPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
+    <MauiXaml Update="Pages\RegisterEventPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
     <MauiXaml Update="Pages\AssetsPage.xaml">
@@ -112,10 +143,16 @@
     <MauiXaml Update="Pages\SettingsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
+    <MauiXaml Update="Pages\WelcomePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
   </ItemGroup>
 
   <ItemGroup>
     <None Update="Components\ClaimNftButtonView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Components\Dotbacks\DotbackItemView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
     <None Update="Components\PlayWudButtonView.xaml">
