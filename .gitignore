@@ -8,3 +8,6 @@ obj/
 *csproj.user
 *.keystore
 .idea
+
+screenshots/
+
