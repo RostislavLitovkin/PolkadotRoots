@@ -190,13 +190,13 @@ public partial class DotbackDetailsViewModel : ObservableObject
 
             var result = await dotbacksApi.UpdateStatusAsync(account, dto.EventId, dto.Address, paid: true, rejected: null, subscanUrl: subscanUrl);
 
-            await Shell.Current.DisplayAlert("Success", "Dotback was paid successfully.", "OK");
+            await Shell.Current.DisplayAlertAsync("Success", "Dotback was paid successfully.", "OK");
             await Shell.Current.Navigation.PopAsync();
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex);
-            await Shell.Current.DisplayAlert("Payment error", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Payment error", ex.Message, "OK");
         }
 
         loading.IsVisible = false;
@@ -218,16 +218,16 @@ public partial class DotbackDetailsViewModel : ObservableObject
             if (updated?.Rejected == true)
             {
                 Title = "Dotback (Rejected)";
-                await Shell.Current.DisplayAlert("Rejected", "The dotback was marked as rejected.", "OK");
+                await Shell.Current.DisplayAlertAsync("Rejected", "The dotback was marked as rejected.", "OK");
             }
             else
             {
-                await Shell.Current.DisplayAlert("Rejected", "Dotback status updated.", "OK");
+                await Shell.Current.DisplayAlertAsync("Rejected", "Dotback status updated.", "OK");
             }
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Error", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Error", ex.Message, "OK");
         }
     }
 
@@ -243,7 +243,7 @@ public partial class DotbackDetailsViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Error", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Error", ex.Message, "OK");
         }
     }
 }

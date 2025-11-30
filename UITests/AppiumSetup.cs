@@ -3,10 +3,12 @@
 using OpenQA.Selenium.Appium;
 using OpenQA.Selenium.Appium.Android;
 using OpenQA.Selenium.Appium.Enums;
+using System.Diagnostics.CodeAnalysis;
 
 namespace UITests;
 
 [SetUpFixture]
+[SuppressMessage("NUnit.Analyzers", "NUnit1032", Justification = "Driver is disposed in OneTimeTearDown to allow sharing across tests.")]
 public class AppiumSetup
 {
     private static AppiumDriver? driver;

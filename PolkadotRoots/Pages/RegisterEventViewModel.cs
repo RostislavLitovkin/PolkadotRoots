@@ -185,7 +185,7 @@ public partial class RegisterEventViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Error", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Error", ex.Message, "OK");
         }
     }
 
@@ -268,19 +268,19 @@ public partial class RegisterEventViewModel : ObservableObject
             if (IsEdit)
             {
                 var updated = await eventsApi.PutAsync(account, Id, dto);
-                await Shell.Current.DisplayAlert("Success", $"Event '{updated.Name}' updated.", "OK");
+                await Shell.Current.DisplayAlertAsync("Success", $"Event '{updated.Name}' updated.", "OK");
             }
             else
             {
                 var created = await eventsApi.CreateAsync(account, dto);
-                await Shell.Current.DisplayAlert("Success", $"Event '{created.Name}' created.", "OK");
+                await Shell.Current.DisplayAlertAsync("Success", $"Event '{created.Name}' created.", "OK");
             }
 
             await Shell.Current.Navigation.PopAsync();
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Error", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Error", ex.Message, "OK");
         }
     }
 }

@@ -142,7 +142,7 @@ namespace PolkadotRoots.Pages
                         messagePopup.IsVisible = true;
                     }
 
-                    await Application.Current.MainPage.Navigation.PopAsync();
+                    await Shell.Current.Navigation.PopAsync();
                 }
                 catch (Exception ex)
                 {

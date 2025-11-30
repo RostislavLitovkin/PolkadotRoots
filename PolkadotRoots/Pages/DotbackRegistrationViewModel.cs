@@ -129,13 +129,13 @@ public partial class DotbackRegistrationViewModel : ObservableObject
 
             var result = await dotbacksApi.UpsertAsync(account, reg);
 
-            await Shell.Current.DisplayAlert("Success", "Your dotback was submitted.", "OK");
+            await Shell.Current.DisplayAlertAsync("Success", "Your dotback was submitted.", "OK");
             await Shell.Current.Navigation.PopAsync();
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex);
-            await Shell.Current.DisplayAlert("Error", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Error", ex.Message, "OK");
         }
     }
 }
