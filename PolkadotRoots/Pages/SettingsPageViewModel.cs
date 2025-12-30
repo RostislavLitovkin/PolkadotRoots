@@ -40,7 +40,7 @@ namespace PolkadotRoots.Pages
 
             await SQLiteModel.DeleteAllDatabasesAsync();
 
-            App.Current.MainPage = new OnboardingShell();
+            await App.SetRootPageAsync(new OnboardingShell());
         }
 
         [RelayCommand]

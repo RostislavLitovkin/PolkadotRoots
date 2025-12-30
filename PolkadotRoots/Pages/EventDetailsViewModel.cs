@@ -119,7 +119,7 @@ public partial class EventDetailsViewModel : ObservableObject
         if (!IsOrganizerOrAdmin)
             return;
 
-        var confirm = await Shell.Current.DisplayAlert("Delete event", "Are you sure you want to delete this event?", "Delete", "Cancel");
+        var confirm = await Shell.Current.DisplayAlertAsync("Delete event", "Are you sure you want to delete this event?", "Delete", "Cancel");
         if (!confirm)
             return;
 
@@ -132,17 +132,17 @@ public partial class EventDetailsViewModel : ObservableObject
             var ok = await api.DeleteAsync(account, id);
             if (ok)
             {
-                await Shell.Current.DisplayAlert("Deleted", "Event has been deleted.", "OK");
+                await Shell.Current.DisplayAlertAsync("Deleted", "Event has been deleted.", "OK");
                 await Shell.Current.Navigation.PopAsync();
             }
             else
             {
-                await Shell.Current.DisplayAlert("Not found", "Event was not found.", "OK");
+                await Shell.Current.DisplayAlertAsync("Not found", "Event was not found.", "OK");
             }
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Error", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Error", ex.Message, "OK");
         }
     }
 
@@ -228,25 +228,25 @@ public partial class EventDetailsViewModel : ObservableObject
         DateTimeOffset? s = FromUnixMaybe(start);
         DateTimeOffset? e = FromUnixMaybe(end);
 
-        string startText = s.HasValue ? s.Value.ToLocalTime().ToString("ddd, MMM d • HH:mm") : "TBA";
-        string endText = e.HasValue ? e.Value.ToLocalTime().ToString("ddd, MMM d • HH:mm") : "TBA";
+        string startText = s.HasValue ? s.Value.ToLocalTime().ToString("ddd, MMM d ï¿½ HH:mm") : "TBA";
+        string endText = e.HasValue ? e.Value.ToLocalTime().ToString("ddd, MMM d ï¿½ HH:mm") : "TBA";
 
         string subtitle;
         if (s.HasValue && e.HasValue)
         {
             bool sameDay = s.Value.Date == e.Value.Date;
             if (sameDay)
-                subtitle = $"{s.Value.ToLocalTime():ddd, MMM d • HH:mm} – {e.Value.ToLocalTime():HH:mm}";
+                subtitle = $"{s.Value.ToLocalTime():ddd, MMM d ï¿½ HH:mm} ï¿½ {e.Value.ToLocalTime():HH:mm}";
             else
-                subtitle = $"{s.Value.ToLocalTime():ddd, MMM d • HH:mm} – {e.Value.ToLocalTime():ddd, MMM d • HH:mm}";
+                subtitle = $"{s.Value.ToLocalTime():ddd, MMM d ï¿½ HH:mm} ï¿½ {e.Value.ToLocalTime():ddd, MMM d ï¿½ HH:mm}";
         }
         else if (s.HasValue)
-            subtitle = s.Value.ToLocalTime().ToString("ddd, MMM d • HH:mm");
+            subtitle = s.Value.ToLocalTime().ToString("ddd, MMM d ï¿½ HH:mm");
         else
             subtitle = "Date to be announced";
 
         if (!string.IsNullOrWhiteSpace(venue))
-            subtitle = string.IsNullOrWhiteSpace(subtitle) ? venue : $"{subtitle} • {venue}";
+            subtitle = string.IsNullOrWhiteSpace(subtitle) ? venue : $"{subtitle} ï¿½ {venue}";
 
         return (startText, endText, subtitle);
     }
