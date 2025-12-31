@@ -54,6 +54,7 @@ namespace CommunityTests
             {
                 created = await CreateTestEventAsync();
                 var eventId = created.Id!.Value;
+                var requestTs = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
                 var dotbackRegistration = new DotbackRegistrationDto
                 {
@@ -61,6 +62,7 @@ namespace CommunityTests
                     EventId  = eventId,
                     UsdAmount = 12.34,
                     ImageUrl = "test/communityimage.png",
+                    UnixDateOfRequest = requestTs,
                 };
 
                 var d = await dotbacksClient.UpsertAsync(admin, dotbackRegistration);
@@ -71,6 +73,7 @@ namespace CommunityTests
                 Assert.That(d.ImageUrl, Is.EqualTo("test/communityimage.png"));
                 Assert.That(d.Paid, Is.False);
                 Assert.That(d.Rejected, Is.False);
+                Assert.That(d.UnixDateOfRequest, Is.Not.Null);
             }
             finally
             {
@@ -95,17 +98,20 @@ namespace CommunityTests
                     EventId  = eventId,
                     UsdAmount = 5.0,
                     ImageUrl = "test/communityimage.png",
+                    UnixDateOfRequest = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                 };
 
                 var d1 = await dotbacksClient.UpsertAsync(account, dotbackRegistration);
 
                 dotbackRegistration.UsdAmount = 20.50;
+                dotbackRegistration.UnixDateOfRequest = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
                 var d2 = await dotbacksClient.UpsertAsync(account, dotbackRegistration);
 
                 Assert.That(d2.EventId, Is.EqualTo(eventId));
                 Assert.That(d2.Address, Is.EqualTo(account.Value));
                 Assert.That(d2.UsdAmount, Is.EqualTo(20.50).Within(0.0001));
                 Assert.That(d2.ImageUrl, Is.EqualTo("test/communityimage.png"));
+                Assert.That(d2.UnixDateOfRequest, Is.Not.Null);
             }
             finally
             {
@@ -131,6 +137,7 @@ namespace CommunityTests
                     EventId  = eventId,
                     UsdAmount = 5.0,
                     ImageUrl = "test/communityimage.png",
+                    UnixDateOfRequest = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                 };
 
                 await dotbacksClient.UpsertAsync(account, dotbackRegistration);
@@ -139,6 +146,7 @@ namespace CommunityTests
                 Assert.That(fetched, Is.Not.Null);
                 Assert.That(fetched!.EventId, Is.EqualTo(eventId));
                 Assert.That(fetched.Address, Is.EqualTo(account.Value));
+                Assert.That(fetched.UnixDateOfRequest, Is.Not.Null);
             }
             finally
             {
@@ -162,6 +170,7 @@ namespace CommunityTests
                     EventId  = eventId,
                     UsdAmount = 3.21,
                     ImageUrl = "test/communityimage.png",
+                    UnixDateOfRequest = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                 };
 
                 await dotbacksClient.UpsertAsync(admin, dotbackRegistration);
@@ -192,6 +201,7 @@ namespace CommunityTests
                     EventId  = eventId,
                     UsdAmount = 1.23,
                     ImageUrl = "test/communityimage.png",
+                    UnixDateOfRequest = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                 };
 
                 await dotbacksClient.UpsertAsync(admin, dotbackRegistration);
@@ -223,15 +233,20 @@ namespace CommunityTests
                     EventId  = eventId,
                     UsdAmount = 4.56,
                     ImageUrl = "test/communityimage.png",
+                    UnixDateOfRequest = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                 };
 
                 await dotbacksClient.UpsertAsync(admin, dotbackRegistration);
 
-                var updated = await dotbacksClient.UpdateStatusAsync(admin, eventId, admin.Value, paid: true, rejected: null, subscanUrl: "https://subscan.io/");
+                var paidDotAmount = 1.234;
+                var paidAt = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+                var updated = await dotbacksClient.UpdateStatusAsync(admin, eventId, admin.Value, paid: true, rejected: null, subscanUrl: "https://subscan.io/", dotAmountPaid: paidDotAmount, unixDatePaid: paidAt);
                 Assert.That(updated, Is.Not.Null);
                 Assert.That(updated!.Paid, Is.True);
                 Assert.That(updated.Rejected, Is.False);
                 Assert.That(updated.SubscanUrl, Is.EqualTo("https://subscan.io/"));
+                Assert.That(updated.DotAmountPaid, Is.EqualTo(paidDotAmount).Within(0.0001));
+                Assert.That(updated.UnixDatePaid, Is.EqualTo(paidAt));
             }
             finally
             {

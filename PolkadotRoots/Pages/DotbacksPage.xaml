@@ -24,7 +24,7 @@
              xmlns:loading="clr-namespace:PlutoFramework.Components.Loading;assembly=PlutoFramework"
              xmlns:sumsub="clr-namespace:PlutoFramework.Components.Sumsub;assembly=PlutoFramework"
              xmlns:extrinsic="clr-namespace:PlutoFramework.Components.Extrinsic;assembly=PlutoFramework"
-             BackgroundColor="{AppThemeBinding Light=White, Dark=#0a0a0a}"
+                   xmlns:buttons="clr-namespace:PlutoFramework.Components.Buttons;assembly=PlutoFramework"
              x:Name="self"
              Shell.PresentationMode="ModalNotAnimated"
              HideSoftInputOnTapped="True">
@@ -42,7 +42,14 @@
                 <LinearItemsLayout Orientation="Vertical" ItemSpacing="15" />
             </CollectionView.ItemsLayout>
             <CollectionView.Header>
-                <VerticalStackLayout MinimumHeightRequest="15" />
+                <VerticalStackLayout Spacing="10" Padding="20,10,20,0">
+                    <buttons:ElevatedButton Text="Download CSV"
+                                            Command="{Binding DownloadCsvCommand}"
+                                            IsVisible="{Binding DownloadButtonVisible}"
+                                            HorizontalOptions="Fill"
+                                            VerticalOptions="Start"/>
+                    <VerticalStackLayout MinimumHeightRequest="15" />
+                </VerticalStackLayout>
             </CollectionView.Header>
             <CollectionView.Footer>
                 <StackLayout HeightRequest="200">

@@ -1,10 +1,11 @@
 using PlutoFramework;
 using PlutoFramework.Components.NetworkSelect;
 using PlutoFramework.Model;
+using PlutoFramework.Templates.PageTemplate;
 
 namespace PolkadotRoots.Pages;
 
-public partial class MainPage : ContentPage, IPlutoFrameworkMainPage
+public partial class MainPage : PageTemplate, IPlutoFrameworkMainPage
 {
     public IList<IView> Views => StackLayout?.Children ?? [];
     public static VerticalStackLayout? StackLayout { get; set; }

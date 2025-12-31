@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:PolkadotRoots"
              xmlns:plutoframework="clr-namespace:PlutoFramework;assembly=PlutoFramework"
+             xmlns:templates="clr-namespace:PolkadotRoots.Templates"
              x:Class="PolkadotRoots.App">
     <Application.Resources>
         <ResourceDictionary>
@@ -12,7 +13,9 @@
 
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
-                
+
+                <templates:TemplateDictionary />
+
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

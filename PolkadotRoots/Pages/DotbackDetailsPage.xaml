@@ -8,13 +8,12 @@
              xmlns:buttons="clr-namespace:PlutoFramework.Components.Buttons;assembly=PlutoFramework"
                    xmlns:events="clr-namespace:PolkadotRoots.Components.Events;assembly=PolkadotRoots"
                    xmlns:subscan="clr-namespace:PlutoFramework.Components.Subscan;assembly=PlutoFramework"
-             Title="{Binding Title}"
-             BackgroundColor="{AppThemeBinding Light=#ffffff, Dark=#0f0f12}">
+             Title="{Binding Title}">
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="15">
             <nft:NftImageView ImageSource="{Binding ImageUrl}" />
 
-            <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" ColumnSpacing="10" RowSpacing="8">
+            <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" ColumnSpacing="10" RowSpacing="8">
 
                 <Label Grid.Row="0" Grid.Column="0" Text="Requested:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}"
                        VerticalTextAlignment="End"/>
@@ -40,23 +39,32 @@
                         </FormattedString>
                     </Label.FormattedText>
                 </Label>
+
+                <Label Grid.Row="2" Grid.Column="0" Text="Requested on:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}"/>
+                <Label Grid.Row="2" Grid.Column="1" Text="{Binding RequestDateText}" FontAttributes="Bold" />
+
+                <Label Grid.Row="3" Grid.Column="0" Text="Paid:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" IsVisible="{Binding PaidDetailsVisible}"/>
+                <StackLayout Grid.Row="3" Grid.Column="1" Spacing="2" IsVisible="{Binding PaidDetailsVisible}">
+                    <Label Text="{Binding PaidAmountText}" FontAttributes="Bold" />
+                    <Label Text="{Binding PaidDateText}" FontSize="12" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
+                </StackLayout>
                 
                 <events:EventLittleItemView Title="{Binding EventTitle}"
                                             ImageSource="{Binding EventImageUrl}"
                                             StartDate="{Binding EventStartDate}"
                                             Command="{Binding OpenEventDetailsPageCommand}"
-                                            Grid.Row="2"
+                                            Grid.Row="4"
                                             Grid.Column="0"
                                             Grid.ColumnSpan="2"/>
 
                 <address:SubscanAddressView Title="Recipient:"
                                             Address="{Binding Address}"
                                             AddressText="{Binding Address}"
-                                            Grid.Row="3"
+                                            Grid.Row="5"
                                             Grid.Column="0"
                                             Grid.ColumnSpan="2" />
 
-                <subscan:OpenSubscanButton Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" IsVisible="{Binding HasSubscan}">
+                <subscan:OpenSubscanButton Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" IsVisible="{Binding HasSubscan}">
                     <subscan:OpenSubscanButton.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding OpenSubscanCommand}" />
                     </subscan:OpenSubscanButton.GestureRecognizers>

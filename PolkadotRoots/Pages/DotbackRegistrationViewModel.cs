@@ -149,6 +149,7 @@ public partial class DotbackRegistrationViewModel : ObservableObject
                 Address = account.Value,
                 UsdAmount = Amount * (double)(UsdToLocalRate ?? 0),
                 ImageUrl = $"dotbacks/{EventId}/{FileName}",
+                UnixDateOfRequest = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
             };
 
             var result = await CommunityClientHelper.DotbacksApi.UpsertAsync(account, reg);

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<page:PageTemplate xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:eventsui="clr-namespace:PolkadotRoots.Components.Events"
              x:Class="PolkadotRoots.Pages.EventsPage"
@@ -24,9 +24,11 @@
              xmlns:sumsub="clr-namespace:PlutoFramework.Components.Sumsub;assembly=PlutoFramework"
              xmlns:extrinsic="clr-namespace:PlutoFramework.Components.Extrinsic;assembly=PlutoFramework"
              xmlns:bottomnavbar="clr-namespace:PolkadotRoots.Components.BottomNavBar"
-             BackgroundColor="{AppThemeBinding Light=White, Dark=#0a0a0a}"
+                   xmlns:page="clr-namespace:PlutoFramework.Templates.PageTemplate;assembly=PlutoFramework"
              Shell.PresentationMode="ModalNotAnimated"
-             HideSoftInputOnTapped="True">
+                
+             HideSoftInputOnTapped="True"
+                   NavigationBarIsVisible="False">
 
     <AbsoluteLayout
             AbsoluteLayout.LayoutBounds="0.5, 0.5, 1, 1" AbsoluteLayout.LayoutFlags="All"
@@ -99,4 +101,4 @@
         <password:EnterPasswordPopupView />
         <loading:FullPageLoadingView />
     </AbsoluteLayout>
-</ContentPage>
+</page:PageTemplate>

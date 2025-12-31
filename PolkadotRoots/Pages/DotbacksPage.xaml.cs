@@ -14,7 +14,7 @@ public partial class DotbacksPage : PageTemplate
     protected override void OnAppearing()
     {
         base.OnAppearing();
-        _ = ((DotbacksViewModel)BindingContext).LoadNextPageAsync();
+        _ = ((DotbacksViewModel)BindingContext).InitializeAsync();
     }
 
     private void OnRemainingItemsThresholdReached(object? sender, EventArgs e)

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<page:PageTemplate xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PolkadotRoots.Pages.MainPage"
              Title="MainPage"
@@ -30,10 +30,14 @@
              xmlns:components="clr-namespace:PolkadotRoots.Components"
              xmlns:bohemia="clr-namespace:PlutoFramework.Components.Bohemia;assembly=PlutoFramework"
              xmlns:bottomnavbar="clr-namespace:PolkadotRoots.Components.BottomNavBar"
-             BackgroundColor="{AppThemeBinding Light=White, Dark=#0a0a0a}"
+                   xmlns:page="clr-namespace:PlutoFramework.Templates.PageTemplate;assembly=PlutoFramework"
              Shell.PresentationMode="ModalNotAnimated"
              xmlns:card="clr-namespace:PlutoFramework.Components.Card;assembly=PlutoFramework"
-             HideSoftInputOnTapped="True">
+             xmlns:events="clr-namespace:PolkadotRoots.Components.Events"
+             HideSoftInputOnTapped="True"
+                   NavigationBarIsVisible="False"
+                   BackgroundColor="{StaticResource Primary}"
+                   >
 
     <AbsoluteLayout
                 AbsoluteLayout.LayoutBounds="0.5, 0.5, 1, 1" AbsoluteLayout.LayoutFlags="All">
@@ -50,19 +54,78 @@
                 <VerticalStackLayout
                     x:Name="stackLayout"
                     Spacing="15"
-                    Padding="20, 15, 20, 100">
-                    <Label FontSize="40" Text="Polkadot Community" HorizontalTextAlignment="Center" FontAttributes="Bold"
-                           FontFamily="UnboundedBold"/>
+                    Padding="0, 0, 0, 120">
 
-                    <components:ClaimNftButtonView />
+                    <Border
+                            StrokeThickness="0"
+                            BackgroundColor="{AppThemeBinding Light=#f5f7fb, Dark=#181818}"
+                            Margin="0,0,0,10">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="0, 0, 20, 20" />
+                        </Border.StrokeShape>
+                        <VerticalStackLayout Spacing="8"
+                                             Padding="20, 70, 20, 20">
+                            <VerticalStackLayout Spacing="8" IsVisible="{Binding HasNextInterestedEvent}">
+                                <Label Text="Your next event"
+                                       FontFamily="UnboundedBold"
+                                       FontSize="25"
+                                       TextColor="{AppThemeBinding Light=black, Dark=White}" />
+                                <Label Text="You're marked as interested. Tap to see details and get ready."
+                                       FontSize="12"
+                                       Opacity="0.8"
+                                       TextColor="{AppThemeBinding Light=#4b5563, Dark=#d1d5db}" />
+                                <events:EventLittleItemView
+                                    Title="{Binding NextInterestedEvent.Title}"
+                                    StartDate="{Binding NextInterestedEvent.StartDate}"
+                                    ImageSource="{Binding NextInterestedEvent.ImageSource}"
+                                    Command="{Binding OpenNextEventCommand}"
+                                    CommandParameter="{Binding NextInterestedEvent.Id}"
+                                    />
+                                <Label Text="Explore more events"
+                                       FontFamily="UnboundedBold"
+                                       FontSize="14"
+                                       HorizontalOptions="Center"
+                                       TextColor="{StaticResource Primary}">
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding ExploreEventsCommand}" />
+                                    </Label.GestureRecognizers>
+                                </Label>
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout Spacing="8" IsVisible="{Binding NoNextInterestedEvent}"
+                                                 >
+                                <Label Text="Your next event"
+                                       FontFamily="UnboundedBold"
+                                       FontSize="25"
+                                       TextColor="{AppThemeBinding Light=black, Dark=White}" />
+                                <Label Text="You haven't registered to an upcoming event yet. 😔"
+                                       FontSize="14"
+                                       TextColor="{AppThemeBinding Light=#4b5563, Dark=#d1d5db}"
+                                       Margin="0,20,0,20"
+                                       HorizontalTextAlignment="Start"/>
+                                <Label Text="Explore events"
+                                       FontFamily="UnboundedBold"
+                                       FontSize="14"
+                                       HorizontalOptions="Center"
+                                       TextColor="{StaticResource Primary}">
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding ExploreEventsCommand}" />
+                                    </Label.GestureRecognizers>
+                                </Label>
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <components:ClaimNftButtonView Margin="20, 0, 20, 0" />
 
                     <buttons:ElevatedButton Text="Register Event"
                                             Command="{Binding RegisterEventCommand}"
-                                            IsVisible="{Binding IsAdmin}"/>
+                                            IsVisible="{Binding IsAdmin}"
+                                            Margin="20, 0, 20, 0"/>
 
 
 
-                    <nft:NftOwnedListView />
+                    <nft:NftOwnedListView Margin="20, 0, 20, 0"/>
 
                 </VerticalStackLayout>
             </ScrollView>
@@ -132,4 +195,4 @@
 
         <card:TopPillBackgroundView />
     </AbsoluteLayout>
-</ContentPage>
+</page:PageTemplate>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PolkadotRoots.Components.Countdown.AnimatedHmsView">
+    <ContentView.Content>
+        <HorizontalStackLayout Spacing="12"
+                               HorizontalOptions="Start"
+                               VerticalOptions="Center">
+            <VerticalStackLayout Spacing="-5" HorizontalOptions="Center" VerticalOptions="Center"
+                                 WidthRequest="60">
+                <Label x:Name="HoursLabel"
+                       FontFamily="UnboundedBold"
+                       FontSize="32"
+                       Text="00"
+                       HorizontalTextAlignment="Center" />
+                <Label Text="Hours"
+                       FontSize="12"
+                       TextColor="{AppThemeBinding Light=#6b7280, Dark=#9ca3af}"
+                       HorizontalTextAlignment="Center" />
+            </VerticalStackLayout>
+            <Label Text=":"
+                   FontFamily="UnboundedBold"
+                   FontSize="28"
+                   VerticalOptions="Center" />
+            <VerticalStackLayout Spacing="-5" HorizontalOptions="Center" VerticalOptions="Center"
+                                 WidthRequest="60">
+                <Label x:Name="MinutesLabel"
+                       FontFamily="UnboundedBold"
+                       FontSize="32"
+                       Text="00"
+                       HorizontalTextAlignment="Center" />
+                <Label Text="Minutes"
+                       FontSize="12"
+                       TextColor="{AppThemeBinding Light=#6b7280, Dark=#9ca3af}"
+                       HorizontalTextAlignment="Center" />
+            </VerticalStackLayout>
+            <Label Text=":"
+                   FontFamily="UnboundedBold"
+                   FontSize="28"
+                   VerticalOptions="Center" />
+            <VerticalStackLayout Spacing="-5" HorizontalOptions="Center" VerticalOptions="Center"
+                                 WidthRequest="60">
+                <Label x:Name="SecondsLabel"
+                       FontFamily="UnboundedBold"
+                       FontSize="32"
+                       Text="00"
+                       HorizontalTextAlignment="Center" />
+                <Label Text="Seconds"
+                       FontSize="12"
+                       TextColor="{AppThemeBinding Light=#6b7280, Dark=#9ca3af}"
+                       HorizontalTextAlignment="Center" />
+            </VerticalStackLayout>
+        </HorizontalStackLayout>
+    </ContentView.Content>
+</ContentView>

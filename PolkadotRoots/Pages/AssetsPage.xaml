@@ -29,7 +29,6 @@
              xmlns:vtokens="clr-namespace:PlutoFramework.Components.VTokens;assembly=PlutoFramework"
              xmlns:components="clr-namespace:PolkadotRoots.Components"
              xmlns:bottomnavbar="clr-namespace:PolkadotRoots.Components.BottomNavBar"
-             BackgroundColor="{AppThemeBinding Light=White, Dark=#0a0a0a}"
              Shell.PresentationMode="ModalNotAnimated"
              xmlns:card="clr-namespace:PlutoFramework.Components.Card;assembly=PlutoFramework"
              HideSoftInputOnTapped="True">

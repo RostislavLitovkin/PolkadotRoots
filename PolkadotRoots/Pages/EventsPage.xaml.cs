@@ -4,10 +4,11 @@ using CommunityCore.Storage;
 using Hydration.NetApi.Generated;
 using PlutoFramework.Model;
 using PlutoFramework.Model.HydraDX;
+using PlutoFramework.Templates.PageTemplate;
 
 namespace PolkadotRoots.Pages;
 
-public partial class EventsPage : ContentPage
+public partial class EventsPage : PageTemplate
 {
     private readonly CommunityEventsApiClient eventsApi;
     private readonly StorageApiClient storageApi;

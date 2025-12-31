@@ -1,4 +1,6 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityCore.Admins;
+using CommunityCore.Events;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PlutoFramework.Components.MessagePopup;
 using PlutoFramework.Components.TransferView;
@@ -6,10 +8,20 @@ using PlutoFramework.Components.UniversalScannerView;
 using PlutoFramework.Components.Vault;
 using PlutoFramework.Model;
 using Plutonication;
-using CommunityCore.Admins;
+using PolkadotRoots.Components.BottomNavBar;
+using PolkadotRoots.Helpers;
+using static PolkadotRoots.Components.BottomNavBar.BottomNavBarViewModel;
 
 namespace PolkadotRoots.Pages
 {
+    public sealed class NextInterestedEventItem
+    {
+        public long Id { get; init; }
+        public string? Title { get; init; }
+        public string? StartDate { get; init; }
+        public string? ImageSource { get; init; }
+    }
+
     public partial class MainPageViewModel : ObservableObject
     {
         [RelayCommand]
@@ -24,10 +36,21 @@ namespace PolkadotRoots.Pages
         [ObservableProperty]
         private bool isAdmin = false;
 
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasNextInterestedEvent))]
+        [NotifyPropertyChangedFor(nameof(NoNextInterestedEvent))]
+        private NextInterestedEventItem? nextInterestedEvent;
+
+        public bool HasNextInterestedEvent => NextInterestedEvent is not null;
+        public bool NoNextInterestedEvent => !HasNextInterestedEvent;
+
+        private bool loadingNextEvent;
+
         public MainPageViewModel()
         {
             // fire and forget admin check
             _ = RefreshIsAdminAsync();
+            _ = LoadNextInterestedEventAsync();
         }
 
         [RelayCommand]
@@ -62,12 +85,97 @@ namespace PolkadotRoots.Pages
             }
         }
 
+        private async Task LoadNextInterestedEventAsync()
+        {
+            if (loadingNextEvent)
+            {
+                return;
+            }
+
+            loadingNextEvent = true;
+            NextInterestedEvent = null;
+
+            try
+            {
+                if (!KeysModel.HasSubstrateKey())
+                {
+                    return;
+                }
+
+                var myAddress = KeysModel.GetSubstrateKey();
+                if (string.IsNullOrWhiteSpace(myAddress) || myAddress.StartsWith("Error"))
+                {
+                    return;
+                }
+
+                var now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+                EventDto? best = null;
+
+                var page = 0;
+                const int size = 20;
+                var reachedEnd = false;
+
+                while (!reachedEnd)
+                {
+                    var eventsPage = await CommunityClientHelper.EventsApi.GetPageAsync(page: page, size: size, hasEnded: false);
+                    reachedEnd = eventsPage.Last || eventsPage.Content.Count == 0;
+                    page++;
+
+                    foreach (var ev in eventsPage.Content)
+                    {
+                        if (ev.Id is null || ev.TimeStart is null || ev.TimeStart <= now)
+                        {
+                            continue;
+                        }
+
+                        var interests = await CommunityClientHelper.InterestApi.ListAsync(ev.Id.Value);
+                        if (interests.Any(i => i.Address == myAddress))
+                        {
+                            if (best is null || (ev.TimeStart ?? long.MaxValue) < (best.TimeStart ?? long.MaxValue))
+                            {
+                                best = ev;
+                            }
+                        }
+                    }
+
+                    if (best is not null)
+                    {
+                        break;
+                    }
+                }
+
+                if (best is not null)
+                {
+                    var startText = TimeDateHelper.FormatTimes(best.TimeStart, best.TimeEnd).start;
+                    var imageSrc = await ImageHelper.ResolveImageAsync(best);
+
+                    NextInterestedEvent = new NextInterestedEventItem
+                    {
+                        Id = best.Id!.Value,
+                        Title = best.Name ?? "Untitled event",
+                        StartDate = startText,
+                        ImageSource = imageSrc
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+            finally
+            {
+                loadingNextEvent = false;
+            }
+        }
+
         [RelayCommand]
         public async Task RefreshAsync()
         {
             IsRefreshing = true;
 
             _ = SubstrateClientModel.ChangeConnectedClientsAsync(EndpointsModel.GetSelectedEndpointKeys(), CancellationToken.None);
+
+            await LoadNextInterestedEventAsync();
 
             await Task.Delay(5000);
 
@@ -79,6 +187,39 @@ namespace PolkadotRoots.Pages
 
         [RelayCommand]
         public Task RegisterEventAsync() => Shell.Current.Navigation.PushAsync(new RegisterEventPage());
+
+        [RelayCommand]
+        public Task ExploreEventsAsync() {
+
+            var navbarViewModel = DependencyService.Get<BottomNavBarViewModel>();
+            navbarViewModel.Selected = NavBarSelection.Events;
+
+            return Shell.Current.Navigation.PushAsync(new EventsPage());
+        } 
+
+        [RelayCommand]
+        public async Task OpenNextEventAsync(object? param)
+        {
+            try
+            {
+                long? id = null;
+                switch (param)
+                {
+                    case long l: id = l; break;
+                    case int i: id = i; break;
+                    case string s when long.TryParse(s, out var v): id = v; break;
+                }
+
+                if (id.HasValue)
+                {
+                    await Shell.Current.Navigation.PushAsync(new EventDetailsPage(id.Value));
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
 
         public static void OnScanned(object? sender, ZXing.Net.Maui.BarcodeDetectionEventArgs e)
         {

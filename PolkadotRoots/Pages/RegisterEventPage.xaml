@@ -5,48 +5,74 @@
              xmlns:form="clr-namespace:PlutoFramework.Components.Form;assembly=PlutoFramework"
              xmlns:page="clr-namespace:PlutoFramework.Templates.PageTemplate;assembly=PlutoFramework"
              xmlns:buttons="clr-namespace:PlutoFramework.Components.Buttons;assembly=PlutoFramework"
-             Title="{Binding Title}"
-             BackgroundColor="{AppThemeBinding Light=#ffffff, Dark=#0f0f12}">
-    <VerticalStackLayout Padding="18" Spacing="16">
-        <Label Text="Organizers" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" />
-        <form:FormMultiAddressInputView Addresses="{Binding OrganisatorAddresses, Mode=TwoWay}" />
+             Title="{Binding Title}">
+    <ScrollView>
+        <VerticalStackLayout Padding="18" Spacing="16">
+            <Label Text="Organizers" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" />
+            <form:FormMultiAddressInputView Addresses="{Binding OrganisatorAddresses, Mode=TwoWay}" />
 
-        <Label Text="Name" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" />
-        <form:FormInputView Placeholder="Event name" Text="{Binding Name}" />
+            <Label Text="Name" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" />
+            <form:FormInputView Placeholder="Event name" Text="{Binding Name}" />
 
-        <form:FormImageUploadView Title="Event thumbnail image"
+            <form:FormImageUploadView Title="Event thumbnail image"
                                     ImageStream="{Binding ImageStream}" />
 
-        <Label Text="Description" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" />
-        <form:FormLargeInputView x:Name="desc" Text="{Binding Description}" />
+            <Label Text="Description" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" />
+            <form:FormLargeInputView x:Name="desc" Text="{Binding Description}" />
 
-        <Label Text="Links" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" />
-        <form:FormInputView Placeholder="Luma URL" Text="{Binding LumaUrl}" />
-        <form:FormInputView Placeholder="Website" Text="{Binding Website}" />
-        <form:FormInputView Placeholder="Google Maps URL" Text="{Binding MapsUrl}" />
+            <HorizontalStackLayout Spacing="12" VerticalOptions="Center">
+                <Label Text="Virtual event" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" VerticalOptions="Center" />
+                <Switch IsToggled="{Binding IsVirtual}" VerticalOptions="Center" />
+            </HorizontalStackLayout>
 
-        <Label Text="Location" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" />
-        <form:FormInputView Placeholder="Country" Text="{Binding Country}" />
-        <form:FormInputView Placeholder="Address" Text="{Binding LocationAddress}" />
+            <Label Text="Links" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" />
+            <form:FormInputView Placeholder="Website (optional)" Text="{Binding Website}" />
+            <form:FormInputView Placeholder="Google Maps URL (optional)" Text="{Binding MapsUrl}" IsVisible="{Binding IsInPerson}" />
+            <form:FormInputView Placeholder="Google Meets URL (optional)" Text="{Binding GoogleMeetsUrl}" IsVisible="{Binding IsVirtual}" />
+            <form:FormInputView Placeholder="Zoom URL (optional)" Text="{Binding ZoomUrl}" IsVisible="{Binding IsVirtual}" />
 
-        <Label Text="Contacts" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" />
-        <form:FormInputView Placeholder="Phone number" Text="{Binding PhoneNumber}" />
-        <form:FormInputView Placeholder="Email address" Text="{Binding EmailAddress}" />
+            <Label Text="Location" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" IsVisible="{Binding IsInPerson}" />
+            <form:FormInputView Placeholder="Country" Text="{Binding Country}" IsVisible="{Binding IsInPerson}" />
+            <form:FormInputView Placeholder="Address" Text="{Binding LocationAddress}" IsVisible="{Binding IsInPerson}" />
 
-        <Label Text="Details" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" />
-        <form:FormInputView Placeholder="Capacity (optional)" KeyboardType="Numeric" Text="{Binding CapacityText}" />
-        <form:FormInputView Placeholder="Price (optional)" Text="{Binding Price}" />
-        <Label Text="Note: If your event is not free, you will need to use your own way for collecting the entry fee. This app does not provide a way for attendees to buy tickets." 
-               FontSize="10"
-               Margin="5, 0, 0, 0"
-               TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}"/>
+            <Label Text="Contacts" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" />
+            <form:FormInputView Placeholder="Phone number (optional)" Text="{Binding PhoneNumber}" />
+            <form:FormInputView Placeholder="Email address (optional)" Text="{Binding EmailAddress}" />
 
-        <form:FormDateInputView Title="Start date" Date="{Binding StartDate}" />
-        <form:FormDateInputView Title="End date" Date="{Binding EndDate}" />
+            <Label Text="Details" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" />
+            <form:FormInputView Placeholder="Capacity (optional)" KeyboardType="Numeric" Text="{Binding CapacityText}" />
+            <form:FormInputView Placeholder="Price (optional)" Text="{Binding Price}" />
+            
+            <Label Text="Note: If your event is not free, you will need to use your own way for collecting the entry fee. This app does not provide a way for attendees to buy tickets." 
+                   FontSize="10"
+                   Margin="5, 0, 0, 0"
+                   TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}"/>
 
+            <HorizontalStackLayout Spacing="12" VerticalOptions="Center">
+                <Label Text="Supports DOT-back" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" VerticalOptions="Center" />
+                <Switch IsToggled="{Binding SupportsDotback}" VerticalOptions="Center" />
+            </HorizontalStackLayout>
 
-        <buttons:ElevatedButton Text="Submit"
-                            ButtonState="{Binding SubmitButtonState}"
-                            Command="{Binding SubmitCommand}"/>
-    </VerticalStackLayout>
+            <Label Text="Social media" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" />
+            <form:FormInputView Placeholder="Telegram (optional)" Text="{Binding Telegram}" />
+            <form:FormInputView Placeholder="Discord (optional)" Text="{Binding Discord}" />
+            <form:FormInputView Placeholder="X (optional)" Text="{Binding X}" />
+            <form:FormInputView Placeholder="YouTube (optional)" Text="{Binding Youtube}" />
+            <form:FormInputView Placeholder="Eventbrite (optional)" Text="{Binding Eventbrite}" />
+            <form:FormInputView Placeholder="Luma (optional)" Text="{Binding LumaUrl}" />
+            <form:FormInputView Placeholder="Imported from (optional)" Text="{Binding ImportedFrom}" />
+
+            <form:FormDateInputView Title="Start date" Date="{Binding StartDate}" />
+            <form:FormDateInputView Title="End date" Date="{Binding EndDate}" />
+
+            <Label Text="You can always change and update the details of the event after submission." 
+                   FontSize="10"
+                   Margin="5, 0, 0, 0"
+                   TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}"/>
+            
+            <buttons:ElevatedButton Text="Submit"
+                                    ButtonState="{Binding SubmitButtonState}"
+                                    Command="{Binding SubmitCommand}"/>
+        </VerticalStackLayout>
+    </ScrollView>
 </page:PageTemplate>

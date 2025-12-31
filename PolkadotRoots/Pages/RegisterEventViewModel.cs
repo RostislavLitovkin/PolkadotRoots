@@ -9,8 +9,15 @@ namespace PolkadotRoots.Pages;
 
 public partial class RegisterEventViewModel : ObservableObject
 {
+    private const string VirtualCountryCode = "US";
+    private const string VirtualAddressValue = "Virtual";
+
     private readonly StorageApiClient storage;
     private readonly CommunityEventsApiClient eventsApi;
+
+    private string? lastInPersonCountry;
+    private string? lastInPersonAddress;
+    private string? lastInPersonMapsUrl;
 
     [ObservableProperty]
     private string title = "Register Event";
@@ -41,6 +48,14 @@ public partial class RegisterEventViewModel : ObservableObject
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(SubmitButtonState))]
+    private string? googleMeetsUrl;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(SubmitButtonState))]
+    private string? zoomUrl;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(SubmitButtonState))]
     private string? country;
 
     [ObservableProperty]
@@ -61,14 +76,42 @@ public partial class RegisterEventViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(SubmitButtonState))]
     private string? price = "FREE with App";
 
-    // new date inputs from date picker
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(SubmitButtonState))]
-    private DateTime startDate = default;
+    private bool supportsDotback = true;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(SubmitButtonState))]
-    private DateTime endDate = default;
+    private string? telegram;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(SubmitButtonState))]
+    private string? discord;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(SubmitButtonState))]
+    private string? x;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(SubmitButtonState))]
+    private string? youtube;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(SubmitButtonState))]
+    private string? eventbrite;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(SubmitButtonState))]
+    private string? importedFrom;
+
+    // new date inputs from date picker
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(SubmitButtonState))]
+    private DateTime startDate = DateTime.Today.AddHours(19);
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(SubmitButtonState))]
+    private DateTime endDate = DateTime.Today.AddHours(20);
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(SubmitButtonState))]
@@ -88,22 +131,27 @@ public partial class RegisterEventViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(SubmitButtonState))]
     private List<string> organisatorAddresses = new();
 
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsInPerson))]
+    [NotifyPropertyChangedFor(nameof(SubmitButtonState))]
+    private bool isVirtual;
+
+    public bool IsInPerson => !IsVirtual;
+
     private bool IsEdit => Id.HasValue;
 
     public ButtonStateEnum SubmitButtonState
     {
         get
         {
+            var hasOrganizers = OrganisatorAddresses.Any(a => !string.IsNullOrWhiteSpace(a));
+
             bool baseOk =
+                hasOrganizers &&
                 !string.IsNullOrWhiteSpace(Name) &&
-                !string.IsNullOrWhiteSpace(Address) &&
-                !string.IsNullOrWhiteSpace(MapsUrl) &&
+                !string.IsNullOrWhiteSpace(Description) &&
                 !string.IsNullOrWhiteSpace(Country) &&
-                !string.IsNullOrWhiteSpace(LocationAddress) &&
-                !string.IsNullOrWhiteSpace(CapacityText) &&
-                !string.IsNullOrWhiteSpace(Price) &&
-                StartDate != default &&
-                EndDate != default;
+                !string.IsNullOrWhiteSpace(LocationAddress);
 
             if (!baseOk) return ButtonStateEnum.Disabled;
 
@@ -159,12 +207,21 @@ public partial class RegisterEventViewModel : ObservableObject
             LumaUrl = ev.LumaUrl;
             Website = ev.Website;
             MapsUrl = ev.MapsUrl;
+            GoogleMeetsUrl = ev.GoogleMeetsUrl;
+            ZoomUrl = ev.ZoomUrl;
             Country = ev.Country;
             LocationAddress = ev.Address;
             PhoneNumber = ev.PhoneNumber;
             EmailAddress = ev.EmailAddress;
             CapacityText = ev.Capacity?.ToString();
             Price = ev.Price ?? Price; // keep existing default if null
+            SupportsDotback = ev.SupportsDotback ?? true;
+            Telegram = ev.Telegram;
+            Discord = ev.Discord;
+            X = ev.X;
+            Youtube = ev.Youtube;
+            Eventbrite = ev.Eventbrite;
+            ImportedFrom = ev.ImportedFrom;
 
             if (ev.OrganizatorAddresses != null && ev.OrganizatorAddresses.Count > 0)
             {
@@ -179,9 +236,24 @@ public partial class RegisterEventViewModel : ObservableObject
 
             ExistingImagePath = ev.Image;
 
-            // Convert unix seconds or milliseconds to DateTime
-            StartDate = FromUnixToLocalDateTime(ev.TimeStart) ?? default;
-            EndDate = FromUnixToLocalDateTime(ev.TimeEnd) ?? default;
+            var start = FromUnixToLocalDateTime(ev.TimeStart);
+            var end = FromUnixToLocalDateTime(ev.TimeEnd);
+
+            if (start.HasValue)
+            {
+                StartDate = start.Value;
+            }
+            if (end.HasValue)
+            {
+                EndDate = end.Value;
+            }
+
+            if (EndDate < StartDate)
+            {
+                EndDate = StartDate.AddHours(1);
+            }
+
+            IsVirtual = IsVirtualEvent(ev);
         }
         catch (Exception ex)
         {
@@ -204,6 +276,31 @@ public partial class RegisterEventViewModel : ObservableObject
         }
     }
 
+    private static bool IsVirtualEvent(EventDto ev)
+    {
+        return string.Equals(ev.Address, VirtualAddressValue, StringComparison.OrdinalIgnoreCase);
+    }
+
+    partial void OnIsVirtualChanged(bool value)
+    {
+        if (value)
+        {
+            lastInPersonCountry = Country;
+            lastInPersonAddress = LocationAddress;
+            lastInPersonMapsUrl = MapsUrl;
+
+            Country = VirtualCountryCode;
+            LocationAddress = VirtualAddressValue;
+            MapsUrl = null;
+        }
+        else
+        {
+            Country = string.IsNullOrWhiteSpace(lastInPersonCountry) ? string.Empty : lastInPersonCountry;
+            LocationAddress = string.IsNullOrWhiteSpace(lastInPersonAddress) ? string.Empty : lastInPersonAddress;
+            MapsUrl = lastInPersonMapsUrl;
+        }
+    }
+
     [RelayCommand]
     private async Task SubmitAsync()
     {
@@ -212,6 +309,12 @@ public partial class RegisterEventViewModel : ObservableObject
             var account = await KeysModel.GetAccountAsync();
             if (account is null)
             {
+                return;
+            }
+
+            if (EndDate < StartDate)
+            {
+                await Shell.Current.DisplayAlertAsync("Validation", "End date must be after the start date.", "OK");
                 return;
             }
 
@@ -254,13 +357,22 @@ public partial class RegisterEventViewModel : ObservableObject
                 Image = imagePath,
                 LumaUrl = LumaUrl,
                 Website = Website,
-                MapsUrl = MapsUrl,
-                Country = Country,
-                Address = LocationAddress,
+                MapsUrl = IsVirtual ? null : MapsUrl,
+                GoogleMeetsUrl = IsVirtual ? GoogleMeetsUrl : null,
+                ZoomUrl = IsVirtual ? ZoomUrl : null,
+                Country = IsVirtual ? VirtualCountryCode : Country,
+                Address = IsVirtual ? VirtualAddressValue : LocationAddress,
                 PhoneNumber = PhoneNumber,
                 EmailAddress = EmailAddress,
                 Capacity = capacity,
                 Price = Price,
+                SupportsDotback = SupportsDotback,
+                Telegram = Telegram,
+                Discord = Discord,
+                X = X,
+                Youtube = Youtube,
+                Eventbrite = Eventbrite,
+                ImportedFrom = ImportedFrom,
                 TimeStart = timeStart,
                 TimeEnd = timeEnd,
             };

@@ -12,6 +12,7 @@ namespace PolkadotRoots.Helpers
         public static HttpClient HttpClient { get; } = new HttpClient();
         public static CommunityEventsApiClient EventsApi { get; } = new CommunityEventsApiClient(HttpClient, new CommunityApiOptions());
         public static CommunityDotbacksApiClient DotbacksApi { get; } = new CommunityDotbacksApiClient(HttpClient, new CommunityApiOptions());
+        public static CommunityDotbackStatisticsApiClient DotbacksStatisticsApi { get; } = new CommunityDotbackStatisticsApiClient(HttpClient, new CommunityApiOptions());
         public static StorageApiClient StorageApi { get; } = new StorageApiClient(HttpClient, new CommunityApiOptions());
         public static CommunityInterestApiClient InterestApi { get; } = new CommunityInterestApiClient(HttpClient, new CommunityApiOptions());
         public static CommunityAdminsApiClient AdminsApi { get; } = new CommunityAdminsApiClient(HttpClient, new CommunityApiOptions());

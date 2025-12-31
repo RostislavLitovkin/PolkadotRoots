@@ -67,11 +67,34 @@ public partial class DotbackDetailsViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(LocalValueText))]
     private decimal? usdToLocalRate;
 
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(RequestDateText))]
+    private long? unixDateOfRequest;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(PaidDetailsVisible))]
+    [NotifyPropertyChangedFor(nameof(PaidAmountText))]
+    [NotifyPropertyChangedFor(nameof(PaidDateText))]
+    private double? dotAmountPaid;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(PaidDetailsVisible))]
+    [NotifyPropertyChangedFor(nameof(PaidDateText))]
+    private long? unixDatePaid;
+
     public bool HasConversion => UsdToLocalRate.HasValue && !string.IsNullOrWhiteSpace(Currency) && !string.IsNullOrWhiteSpace(Country);
 
     public string ValueText => HasConversion ? $"{UsdAmount:F2} USD ≈ {(decimal)UsdAmount / UsdToLocalRate!.Value:F2} {Currency}" : $"{UsdAmount:F2} USD";
 
     public string LocalValueText => HasConversion ? $"{(decimal)UsdAmount / UsdToLocalRate!.Value:F2} {(string.IsNullOrWhiteSpace(CurrencySymbol) ? Currency : CurrencySymbol)}" : string.Empty;
+
+    public string RequestDateText => UnixDateOfRequest.HasValue ? FormatUnix(UnixDateOfRequest.Value) : "Unknown";
+
+    public bool PaidDetailsVisible => DotAmountPaid.HasValue || UnixDatePaid.HasValue;
+
+    public string PaidAmountText => DotAmountPaid.HasValue ? $"{DotAmountPaid.Value:F4} DOT" : "Not recorded";
+
+    public string PaidDateText => UnixDatePaid.HasValue ? FormatUnix(UnixDatePaid.Value) : "—";
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(StatusText))]
@@ -115,6 +138,9 @@ public partial class DotbackDetailsViewModel : ObservableObject
         Paid = dto.Paid;
         Rejected = dto.Rejected;
         SubscanUrl = dto.SubscanUrl;
+        UnixDateOfRequest = dto.UnixDateOfRequest;
+        DotAmountPaid = dto.DotAmountPaid;
+        UnixDatePaid = dto.UnixDatePaid;
 
         try
         {
@@ -212,8 +238,9 @@ public partial class DotbackDetailsViewModel : ObservableObject
             }
 
             var subscanUrl = $"https://assethub-polkadot.subscan.io/extrinsic/{txHash}";
+            var paidAt = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
-            var result = await CommunityClientHelper.DotbacksApi.UpdateStatusAsync(account, dto.EventId, dto.Address, paid: true, rejected: null, subscanUrl: subscanUrl);
+            var result = await CommunityClientHelper.DotbacksApi.UpdateStatusAsync(account, dto.EventId, dto.Address, paid: true, rejected: null, subscanUrl: subscanUrl, dotAmountPaid: (double)dotAmount, unixDatePaid: paidAt);
 
             await Shell.Current.DisplayAlertAsync("Success", "Dotback was paid successfully.", "OK");
             await Shell.Current.Navigation.PopAsync();
@@ -274,4 +301,16 @@ public partial class DotbackDetailsViewModel : ObservableObject
 
     [RelayCommand]
     private Task OpenEventDetailsPageAsync() => Shell.Current.Navigation.PushAsync(new EventDetailsPage(EventId));
+
+    private static string FormatUnix(long unixSeconds)
+    {
+        try
+        {
+            return DateTimeOffset.FromUnixTimeSeconds(unixSeconds).ToLocalTime().ToString("g");
+        }
+        catch
+        {
+            return "Unknown";
+        }
+    }
 }

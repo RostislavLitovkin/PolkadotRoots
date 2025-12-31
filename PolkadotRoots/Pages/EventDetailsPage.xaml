@@ -20,113 +20,256 @@
                      xmlns:card="clr-namespace:PlutoFramework.Components.Card;assembly=PlutoFramework"
                      xmlns:buttons="clr-namespace:PlutoFramework.Components.Buttons;assembly=PlutoFramework"
                      xmlns:xcavate="clr-namespace:PlutoFramework.Components.Xcavate;assembly=PlutoFramework"
+                     xmlns:countdown="clr-namespace:PolkadotRoots.Components.Countdown"
                      Title="{Binding Title}"
-                     BackgroundColor="{AppThemeBinding Light=#ffffff, Dark=#0f0f12}"
                      Shell.PresentationMode="ModalNotAnimated">
     <ScrollView>
         <VerticalStackLayout Padding="18" x:Name="LayoutRoot"
-                         Spacing="15">
-
+                             Spacing="15">
             <!-- Banner -->
             <nft:NftImageView ImageSource="{Binding BannerImage}" />
 
+            <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto" ColumnSpacing="10" RowSpacing="8"
+                  IsVisible="{Binding ShowTimeBreakdown}">
+
+                <Label Grid.Row="0" Grid.Column="0" Text="Starts in:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}"
+                       VerticalTextAlignment="End"/>
+
+                <countdown:AnimatedHmsView Grid.Row="0" Grid.Column="1"
+                                           Hours="{Binding HoursRemaining}"
+                                           Minutes="{Binding MinutesRemaining}"
+                                           Seconds="{Binding SecondsRemaining}" />
+            </Grid>
+            <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto" ColumnSpacing="10" RowSpacing="8"
+                  IsVisible="{Binding ShowDaysOnly}">
+
+                <Label Grid.Row="0" Grid.Column="0" Text="Starts in:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}"
+                       VerticalTextAlignment="End"/>
+
+                <Label Text="{Binding DaysOnlyText}"
+                       Grid.Row="0" Grid.Column="1"
+                       FontFamily="UnboundedBold"
+                       FontSize="25"
+                       HorizontalTextAlignment="Start"
+                       HorizontalOptions="Start"
+                       LineBreakMode="WordWrap" />
+            </Grid>
+
+            <Label Text="In progress"
+                   IsVisible="{Binding InProgressIsVisible}"
+                   FontFamily="UnboundedBold"
+                   FontSize="25"
+                   HorizontalTextAlignment="Center"
+                   HorizontalOptions="Center"
+                   LineBreakMode="WordWrap" />
+
+            <Label Text="Event ended"
+                   IsVisible="{Binding EventEndedIsVisible}"
+                   FontFamily="UnboundedBold"
+                   FontSize="25"
+                   HorizontalTextAlignment="Center"
+                   HorizontalOptions="Center"
+                   LineBreakMode="WordWrap" />
+
             <Label Text="{Binding InterestedText}" LineBreakMode="WordWrap"
-               FontFamily="UnboundedBold"
-               FontSize="20"/>
+                   FontFamily="UnboundedBold"
+                   FontSize="20"/>
 
             <buttons:ElevatedButton Text="Attend"
                                 ButtonState="Enabled"
                                 IsVisible="{Binding InterestButtonIsVisible}" 
                                 Command="{Binding InterestCommand}" />
 
-            <Border StrokeThickness="1"
-                HeightRequest="{StaticResource ButtonHeight}"
-                Stroke="{StaticResource Primary}"
-                IsVisible="{Binding IsInterested}">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
+            <Grid 
+                    IsVisible="{Binding IsInterested}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
 
-                    <Label Text="Interested"
-                       FontFamily="UnboundedBold"
-                       TextColor="{StaticResource Primary}"
-                       Margin="0, 0, 0, 0"
-                       Grid.Column="0"
-                       VerticalTextAlignment="Center"
-                       VerticalOptions="Center"
-                       HorizontalOptions="Center"
-                       HorizontalTextAlignment="Center"
-                       FontSize="18"/>
-                </Grid>
-                <Border.StrokeShape>
-                    <RoundRectangle CornerRadius="{StaticResource ButtonCornerRadius}"
-                        x:Name="roundRectangle"/>
+                <Border StrokeThickness="1"
+                        Grid.Column="0"
+                    HeightRequest="{StaticResource ButtonHeight}"
+                    Stroke="{StaticResource Primary}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
 
-                </Border.StrokeShape>
-            </Border>
+                        <Label Text="Interested"
+                           FontFamily="UnboundedBold"
+                           TextColor="{StaticResource Primary}"
+                           Margin="0, 0, 0, 0"
+                           Grid.Column="0"
+                           VerticalTextAlignment="Center"
+                           VerticalOptions="Center"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"
+                           FontSize="18"/>
+                    </Grid>
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="{StaticResource ButtonCornerRadius}"
+                                         x:Name="roundRectangle"/>
+
+                    </Border.StrokeShape>
+                </Border>
+
+                <buttons:ElevatedButton IsVisible="{Binding HasMapsLink}"
+                                        Command="{Binding OpenMapsCommand}"
+                                        Grid.Column="1"
+                                        Margin="10, 0, 0, 0"
+                                        WidthRequest="{StaticResource ButtonHeight}">
+                    <buttons:ElevatedButton.ImageSource>
+                        <FontImageSource Glyph="&#xf041;"
+                                         FontFamily="FontAwesome"
+                                         Color="White"
+                                         Size="25"/>
+                    </buttons:ElevatedButton.ImageSource>
+                </buttons:ElevatedButton>
+                <buttons:ElevatedButton Grid.Column="2"
+                                        ButtonState="Enabled"
+                                        Command="{Binding AddToCalendarCommand}"
+                                        Margin="10, 0, 0, 0"
+                                        WidthRequest="{StaticResource ButtonHeight}">
+                    <buttons:ElevatedButton.ImageSource>
+                        <FontImageSource Glyph="&#xf133;"
+                                         FontFamily="FontAwesome"
+                                         Color="White"
+                                         Size="25"/>
+                    </buttons:ElevatedButton.ImageSource>
+                </buttons:ElevatedButton>
+            </Grid>
 
             <buttons:ElevatedButton Text="Submit DOT-back"
                         ButtonState="Enabled"
+                        IsVisible="{Binding DotbackButtonIsVisible}"
                         Command="{Binding DotbackCommand}" />
 
             <buttons:ElevatedButton Text="Manage DOT-backs"
                                 ButtonState="Enabled"
-                                IsVisible="{Binding IsOrganizer}"
+                                IsVisible="{Binding IsOrganizerAndSupportsDotback}"
                                 Command="{Binding ManageDotbacksCommand}" />
 
             <buttons:ElevatedButton Text="Edit event details"
-                        ButtonState="Enabled"
-                        IsVisible="{Binding IsOrganizer}"
-                        Command="{Binding EditEventCommand}" />
+                                    ButtonState="Enabled"
+                                    IsVisible="{Binding IsOrganizer}"
+                                    Command="{Binding EditEventCommand}" />
 
             <buttons:ElevatedButton Text="Delete event"
-                                ButtonState="Enabled"
-                                IsVisible="{Binding IsOrganizerOrAdmin}"
-                                Command="{Binding DeleteEventCommand}" />
+                                    ButtonState="Enabled"
+                                    IsVisible="{Binding IsOrganizerOrAdmin}"
+                                    Command="{Binding DeleteEventCommand}" />
 
-            <!-- About -->
-            <VerticalStackLayout>
-                <Label Text="About" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" />
-                <Label Text="{Binding Description}" LineBreakMode="WordWrap" />
-            </VerticalStackLayout>
+            <Label Text="{Binding Title}" LineBreakMode="WordWrap"
+                   FontFamily="UnboundedBold"
+                   FontSize="24"/>
 
+            <Label Text="{Binding Description}" LineBreakMode="WordWrap"
+                   FontSize="16" />
             <!-- Details section -->
             <card:Card>
                 <card:Card.View>
                     <VerticalStackLayout Grid.Row="1" Spacing="10" Padding="0,15,0,15">
                         <Label Text="Details" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" />
-                        <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" ColumnSpacing="10" RowSpacing="8">
-                            <Label Grid.Row="0" Grid.Column="0" Text="Start:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
-                            <Label Grid.Row="0" Grid.Column="1" Text="{Binding StartText}" />
-
-                            <Label Grid.Row="1" Grid.Column="0" Text="End:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
-                            <Label Grid.Row="1" Grid.Column="1" Text="{Binding EndText}" />
-
-                            <Label Grid.Row="2" Grid.Column="0" Text="Address:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
-                            <Label Grid.Row="2" Grid.Column="1" Text="{Binding AddressLine}" />
-
-                            <Label Grid.Row="3" Grid.Column="0" Text="Price:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
-                            <Label Grid.Row="3" Grid.Column="1" Text="{Binding PriceText}" />
-
-                            <Label Grid.Row="4" Grid.Column="0" Text="Luma:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
-                            <Label Grid.Row="4" Grid.Column="1"
-                                   Text="{Binding LumaUrl}">
-                                <Label.GestureRecognizers>
-                                    <TapGestureRecognizer Command="{Binding OpenUrlCommand}" CommandParameter="{Binding LumaUrl}" />
-                                </Label.GestureRecognizers>
-                            </Label>
-
-                            <Label Grid.Row="5" Grid.Column="0" Text="Website:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
-                            <Label Grid.Row="5" Grid.Column="1" Text="{Binding Website}">
-                                <Label.GestureRecognizers>
-                                    <TapGestureRecognizer Command="{Binding OpenUrlCommand}" CommandParameter="{Binding Website}" />
-                                </Label.GestureRecognizers>
-                            </Label>
-
-                            <Label Grid.Row="6" Grid.Column="0" Text="Capacity:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
-                            <Label Grid.Row="6" Grid.Column="1" Text="{Binding CapacityText}" />
-                        </Grid>
+                        <VerticalStackLayout Spacing="8">
+                            <HorizontalStackLayout Spacing="10">
+                                <Label Text="Start:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
+                                <Label Text="{Binding StartText}" />
+                            </HorizontalStackLayout>
+                            <HorizontalStackLayout Spacing="10">
+                                <Label Text="End:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
+                                <Label Text="{Binding EndText}" />
+                            </HorizontalStackLayout>
+                            <HorizontalStackLayout Spacing="10">
+                                <Label Text="Address:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
+                                <Label Text="{Binding AddressLine}" />
+                            </HorizontalStackLayout>
+                            <HorizontalStackLayout Spacing="10">
+                                <Label Text="Price:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
+                                <Label Text="{Binding PriceText}" />
+                            </HorizontalStackLayout>
+                            <HorizontalStackLayout Spacing="10" IsVisible="{Binding HasLumaUrl}">
+                                <Label Text="Luma:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
+                                <Label Text="{Binding LumaUrl}">
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding OpenUrlCommand}" CommandParameter="{Binding LumaUrl}" />
+                                    </Label.GestureRecognizers>
+                                </Label>
+                            </HorizontalStackLayout>
+                            <HorizontalStackLayout Spacing="10" IsVisible="{Binding HasWebsite}">
+                                <Label Text="Website:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
+                                <Label Text="{Binding Website}">
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding OpenUrlCommand}" CommandParameter="{Binding Website}" />
+                                    </Label.GestureRecognizers>
+                                </Label>
+                            </HorizontalStackLayout>
+                            <HorizontalStackLayout Spacing="10" IsVisible="{Binding HasGoogleMeets}">
+                                <Label Text="Google Meets:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
+                                <Label Text="{Binding GoogleMeetsUrl}">
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding OpenUrlInLauncherAsync}" CommandParameter="{Binding GoogleMeetsUrl}" />
+                                    </Label.GestureRecognizers>
+                                </Label>
+                            </HorizontalStackLayout>
+                            <HorizontalStackLayout Spacing="10" IsVisible="{Binding HasZoom}">
+                                <Label Text="Zoom:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
+                                <Label Text="{Binding ZoomUrl}">
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding OpenUrlInLauncherAsync}" CommandParameter="{Binding ZoomUrl}" />
+                                    </Label.GestureRecognizers>
+                                </Label>
+                            </HorizontalStackLayout>
+                            <HorizontalStackLayout Spacing="10" IsVisible="{Binding HasCapacityText}">
+                                <Label Text="Capacity:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
+                                <Label Text="{Binding CapacityText}" />
+                            </HorizontalStackLayout>
+                            <HorizontalStackLayout Spacing="10" IsVisible="{Binding HasTelegram}">
+                                <Label Text="Telegram:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
+                                <Label Text="{Binding Telegram}">
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding OpenUrlInLauncherAsync}" CommandParameter="{Binding Telegram}"  />
+                                    </Label.GestureRecognizers>
+                                </Label>
+                            </HorizontalStackLayout>
+                            <HorizontalStackLayout Spacing="10" IsVisible="{Binding HasDiscord}">
+                                <Label Text="Discord:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
+                                <Label Text="{Binding Discord}">
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding OpenUrlCommand}" CommandParameter="{Binding Discord}" />
+                                    </Label.GestureRecognizers>
+                                </Label>
+                            </HorizontalStackLayout>
+                            <HorizontalStackLayout Spacing="10" IsVisible="{Binding HasX}">
+                                <Label Text="X:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
+                                <Label Text="{Binding X}">
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding OpenUrlCommand}" CommandParameter="{Binding X}" />
+                                    </Label.GestureRecognizers>
+                                </Label>
+                            </HorizontalStackLayout>
+                            <HorizontalStackLayout Spacing="10" IsVisible="{Binding HasYoutube}">
+                                <Label Text="YouTube:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
+                                <Label Text="{Binding Youtube}">
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding OpenUrlCommand}" CommandParameter="{Binding Youtube}" />
+                                    </Label.GestureRecognizers>
+                                </Label>
+                            </HorizontalStackLayout>
+                            <HorizontalStackLayout Spacing="10" IsVisible="{Binding HasEventbrite}">
+                                <Label Text="Eventbrite:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
+                                <Label Text="{Binding Eventbrite}">
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding OpenUrlCommand}" CommandParameter="{Binding Eventbrite}" />
+                                    </Label.GestureRecognizers>
+                                </Label>
+                            </HorizontalStackLayout>
+                            <HorizontalStackLayout Spacing="10" IsVisible="{Binding HasImportedFrom}">
+                                <Label Text="Imported from:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
+                                <Label Text="{Binding ImportedFrom}" />
+                            </HorizontalStackLayout>
+                        </VerticalStackLayout>
                     </VerticalStackLayout>
                 </card:Card.View>
             </card:Card>
@@ -143,13 +286,6 @@
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
-
-            <!-- Maps link -->
-            <HorizontalStackLayout Grid.Row="3" Spacing="12" Padding="0,12,0,0">
-
-
-                <buttons:ElevatedButton Text="Open in Google Maps" Command="{Binding OpenMapsCommand}" />
-            </HorizontalStackLayout>
         </VerticalStackLayout>
     </ScrollView>
 </page:PageTemplate>

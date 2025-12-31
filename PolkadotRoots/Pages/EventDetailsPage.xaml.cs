@@ -4,24 +4,27 @@ namespace PolkadotRoots.Pages;
 
 public partial class EventDetailsPage : PageTemplate
 {
-    private readonly EventDetailsViewModel vm;
-
     public EventDetailsPage(long id)
     {
         InitializeComponent();
-        vm = new EventDetailsViewModel(id);
-        BindingContext = vm;
+        BindingContext = new EventDetailsViewModel(id);
     }
 
-    protected override async void OnAppearing()
+    protected override void OnAppearing()
     {
         base.OnAppearing();
 
-        await vm.LoadAsync();
+        _ = ((EventDetailsViewModel)BindingContext).LoadAsync();
     }
 
-    private async void OnBackClicked(object sender, EventArgs e)
+    protected override void OnDisappearing()
     {
-        await Navigation.PopAsync();
+        base.OnDisappearing();
+        ((EventDetailsViewModel)BindingContext).Stop();
+    }
+
+    private void OnBackClicked(object sender, EventArgs e)
+    {
+        _ = Navigation.PopAsync();
     }
 }

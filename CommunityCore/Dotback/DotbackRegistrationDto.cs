@@ -17,6 +17,9 @@ namespace CommunityCore.Dotback
         [JsonPropertyName("imageUrl")]
         public required string ImageUrl { get; set; }
 
+        [JsonPropertyName("unixDateOfRequest")]
+        public required long UnixDateOfRequest { get; set; }
+
         public byte[] Encode()
         {
             return [
@@ -24,6 +27,7 @@ namespace CommunityCore.Dotback
                 .. Helpers.ScaleEncodeString(Address),
                 .. new U64((ulong)(UsdAmount * 100)).Encode(),
                 .. Helpers.ScaleEncodeString(ImageUrl),
+                .. new U64((ulong)UnixDateOfRequest).Encode(),
             ];
         }
     }

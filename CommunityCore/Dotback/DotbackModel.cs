@@ -28,6 +28,7 @@ namespace CommunityCore.Dotback
             if (account is null) throw new ArgumentNullException(nameof(account));
             if (registration.UsdAmount <= 0) throw new ArgumentOutOfRangeException(nameof(registration.UsdAmount));
             if (string.IsNullOrWhiteSpace(registration.ImageUrl)) throw new ArgumentException("imageUrl is required", nameof(registration.ImageUrl));
+            if (registration.UnixDateOfRequest <= 0) registration.UnixDateOfRequest = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
             var address = account.Value;
 
@@ -81,9 +82,14 @@ namespace CommunityCore.Dotback
         }
 
         // PATCH /api/dotbacks/{eventId}/{address}/status
-        public async Task<DotbackDto?> UpdateStatusAsync(Account admin, long eventId, string address, bool? paid = null, bool? rejected = null, string? subscanUrl = null, CancellationToken ct = default)
+        public async Task<DotbackDto?> UpdateStatusAsync(Account admin, long eventId, string address, bool? paid = null, bool? rejected = null, string? subscanUrl = null, double? dotAmountPaid = null, long? unixDatePaid = null, CancellationToken ct = default)
         {
             if (admin is null) throw new ArgumentNullException(nameof(admin));
+
+            if (unixDatePaid is null && (paid ?? false))
+            {
+                unixDatePaid = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            }
 
             var update = new DotbackStatusUpdateDto
             {
@@ -91,7 +97,9 @@ namespace CommunityCore.Dotback
                 Address = address,
                 Paid = paid,
                 Rejected = rejected,
-                SubscanUrl = subscanUrl
+                SubscanUrl = subscanUrl,
+                DotAmountPaid = dotAmountPaid,
+                UnixDatePaid = unixDatePaid
             };
 
             var wrapped = new RestWrapper<DotbackStatusUpdateDto>(admin, update);
