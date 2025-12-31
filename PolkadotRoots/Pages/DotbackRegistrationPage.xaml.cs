@@ -14,12 +14,7 @@ public partial class DotbackRegistrationPage : PageTemplate
     {
         InitializeComponent();
 
-        var http = new HttpClient();
-        var storage = new StorageApiClient(http, new CommunityApiOptions());
-        var api = new CommunityDotbacksApiClient(http, new CommunityApiOptions());
-        var eventsApi = new CommunityEventsApiClient(http, new CommunityApiOptions());
-
-        vm = new DotbackRegistrationViewModel(storage, api, eventId, eventName, countryCode);
+        vm = new DotbackRegistrationViewModel(eventId, countryCode);
         BindingContext = vm;
         _ = vm.InitAsync();
     }

@@ -1,7 +1,6 @@
 ﻿using CommunityCore;
 using CommunityCore.Dotback;
 using CommunityCore.Events;
-using CommunityCore.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PlutoFramework.Components.Loading;
@@ -10,20 +9,28 @@ using PlutoFramework.Constants;
 using PlutoFramework.Model;
 using PlutoFramework.Model.HydraDX;
 using PolkadotRoots.Helpers;
+using PlutoFramework.Components.WebView;
 
 namespace PolkadotRoots.Pages;
 
 public partial class DotbackDetailsViewModel : ObservableObject
 {
     private readonly DotbackDto dto;
-    private readonly StorageApiClient storage;
-    private readonly CommunityDotbacksApiClient dotbacksApi;
 
     [ObservableProperty]
     private string title = "Dotback";
 
     [ObservableProperty]
     private long eventId;
+
+    [ObservableProperty]
+    private string eventImageUrl = string.Empty;
+
+    [ObservableProperty]
+    private string eventTitle = string.Empty;
+
+    [ObservableProperty]
+    private string eventStartDate = string.Empty;
 
     [ObservableProperty]
     private string address = string.Empty;
@@ -68,15 +75,19 @@ public partial class DotbackDetailsViewModel : ObservableObject
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(StatusText))]
+    [NotifyPropertyChangedFor(nameof(StatusColor))]
     [NotifyPropertyChangedFor(nameof(ButtonIsVisible))]
     private bool paid;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(StatusText))]
+    [NotifyPropertyChangedFor(nameof(StatusColor))]
     [NotifyPropertyChangedFor(nameof(ButtonIsVisible))]
     private bool rejected;
 
     public string StatusText => Rejected ? "Rejected" : Paid ? "Paid" : "Pending";
+
+    public Color StatusColor => Rejected ? Colors.DarkRed : Paid ? Colors.Green : Colors.Orange;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ButtonIsVisible))]
@@ -91,11 +102,9 @@ public partial class DotbackDetailsViewModel : ObservableObject
 
     public bool HasSubscan => !string.IsNullOrWhiteSpace(SubscanUrl);
 
-    public DotbackDetailsViewModel(DotbackDto dto, StorageApiClient storage, CommunityDotbacksApiClient dotbacksApi)
+    public DotbackDetailsViewModel(DotbackDto dto)
     {
         this.dto = dto;
-        this.storage = storage;
-        this.dotbacksApi = dotbacksApi;
     }
 
     public async Task LoadAsync()
@@ -111,7 +120,7 @@ public partial class DotbackDetailsViewModel : ObservableObject
         {
             if (!string.IsNullOrWhiteSpace(dto.ImageUrl))
             {
-                ImageUrl = await storage.GetImageAsync(dto.ImageUrl);
+                ImageUrl = await CommunityClientHelper.StorageApi.GetImageAsync(dto.ImageUrl);
             }
         }
         catch { }
@@ -142,6 +151,22 @@ public partial class DotbackDetailsViewModel : ObservableObject
             }
         }
         catch { }
+
+        try
+        {
+            var ev = await CommunityClientHelper.EventsApi.GetAsync(EventId);
+
+            if (ev != null && !string.IsNullOrWhiteSpace(ev.Image))
+            {
+                EventTitle = ev.Name ?? "";
+                EventStartDate = TimeDateHelper.FormatTimes(ev.TimeStart, ev.TimeEnd).start;
+                EventImageUrl = await CommunityClientHelper.StorageApi.GetImageAsync(ev.Image);
+            }
+        }
+        catch
+        {
+
+        }
     }
 
     [RelayCommand]
@@ -188,7 +213,7 @@ public partial class DotbackDetailsViewModel : ObservableObject
 
             var subscanUrl = $"https://assethub-polkadot.subscan.io/extrinsic/{txHash}";
 
-            var result = await dotbacksApi.UpdateStatusAsync(account, dto.EventId, dto.Address, paid: true, rejected: null, subscanUrl: subscanUrl);
+            var result = await CommunityClientHelper.DotbacksApi.UpdateStatusAsync(account, dto.EventId, dto.Address, paid: true, rejected: null, subscanUrl: subscanUrl);
 
             await Shell.Current.DisplayAlertAsync("Success", "Dotback was paid successfully.", "OK");
             await Shell.Current.Navigation.PopAsync();
@@ -239,11 +264,14 @@ public partial class DotbackDetailsViewModel : ObservableObject
 
         try
         {
-            await Browser.OpenAsync(SubscanUrl, BrowserLaunchMode.SystemPreferred);
+            await Shell.Current.Navigation.PushAsync(new ExtensionWebViewPage(SubscanUrl));
         }
         catch (Exception ex)
         {
             await Shell.Current.DisplayAlertAsync("Error", ex.Message, "OK");
         }
     }
+
+    [RelayCommand]
+    private Task OpenEventDetailsPageAsync() => Shell.Current.Navigation.PushAsync(new EventDetailsPage(EventId));
 }

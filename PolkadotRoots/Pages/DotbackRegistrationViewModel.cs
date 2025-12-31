@@ -5,15 +5,23 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PlutoFramework.Components.Buttons;
 using PlutoFramework.Model;
+using PolkadotRoots.Helpers;
 
 namespace PolkadotRoots.Pages;
 
 public partial class DotbackRegistrationViewModel : ObservableObject
 {
-    private readonly StorageApiClient storage;
-    private readonly CommunityDotbacksApiClient dotbacksApi;
-    private readonly CommunityEventsApiClient? eventsApi;
-    private readonly long eventId;
+    [ObservableProperty]
+    private long eventId;
+
+    [ObservableProperty]
+    private string eventImageUrl = string.Empty;
+
+    [ObservableProperty]
+    private string eventTitle = string.Empty;
+
+    [ObservableProperty]
+    private string eventStartDate = string.Empty;
 
     [ObservableProperty]
     private string title = "Submit DOT-back";
@@ -64,8 +72,6 @@ public partial class DotbackRegistrationViewModel : ObservableObject
 
     public bool HasImage => !string.IsNullOrWhiteSpace(SelectedImageUrl);
 
-    public long EventId => eventId;
-
     public bool HasConversion => UsdToLocalRate.HasValue && !string.IsNullOrWhiteSpace(Currency);
 
     public bool HasConvertedEstimate => Amount > 0 && HasConversion;
@@ -75,22 +81,40 @@ public partial class DotbackRegistrationViewModel : ObservableObject
         : string.Empty;
 
     public string RequestedAmountTitleText => $"Enter requested Amount: (in {Currency})";
-    public DotbackRegistrationViewModel(StorageApiClient storage, CommunityDotbacksApiClient dotbacksApi, long eventId, string? eventName, string countryCode)
+    public DotbackRegistrationViewModel(long eventId, string countryCode)
     {
-        this.storage = storage;
-        this.dotbacksApi = dotbacksApi;
-        this.eventId = eventId;
-        this.eventName = eventName;
-        this.Country = countryCode;
+        EventId = eventId;
+        Country = countryCode;
     }
 
     public async Task InitAsync()
     {
         Address = KeysModel.GetSubstrateKey("") ?? string.Empty;
 
-        (var currencySymbol, var isoCurrencySymbol, var exchangeRate) = await Helpers.CurrencyHelper.GetCurrencySymbolAndRateToUsdAsync(Country!);
-        Currency = currencySymbol;
-        UsdToLocalRate = exchangeRate;
+        try
+        {
+            (var currencySymbol, var isoCurrencySymbol, var exchangeRate) = await Helpers.CurrencyHelper.GetCurrencySymbolAndRateToUsdAsync(Country!);
+            Currency = currencySymbol;
+            UsdToLocalRate = exchangeRate;
+        } catch
+        {
+        }
+
+        try
+        {
+            var ev = await CommunityClientHelper.EventsApi.GetAsync(EventId);
+
+            if (ev != null && !string.IsNullOrWhiteSpace(ev.Image))
+            {
+                EventTitle = ev.Name ?? "";
+                EventStartDate = TimeDateHelper.FormatTimes(ev.TimeStart, ev.TimeEnd).start;
+                EventImageUrl = await CommunityClientHelper.StorageApi.GetImageAsync(ev.Image);
+            }
+        }
+        catch
+        {
+
+        }
     }
 
     public void Init()
@@ -117,17 +141,17 @@ public partial class DotbackRegistrationViewModel : ObservableObject
             FileName = $"{account.Value}.jpg";
             var contentType = "image/jpeg";
 
-            var upload = await storage.UploadImageAsync(compressed, FileName, contentType, folder);
+            var upload = await CommunityClientHelper.StorageApi.UploadImageAsync(compressed, FileName, contentType, folder);
 
             var reg = new DotbackRegistrationDto
             {
-                EventId = eventId,
+                EventId = EventId,
                 Address = account.Value,
                 UsdAmount = Amount * (double)(UsdToLocalRate ?? 0),
                 ImageUrl = $"dotbacks/{EventId}/{FileName}",
             };
 
-            var result = await dotbacksApi.UpsertAsync(account, reg);
+            var result = await CommunityClientHelper.DotbacksApi.UpsertAsync(account, reg);
 
             await Shell.Current.DisplayAlertAsync("Success", "Your dotback was submitted.", "OK");
             await Shell.Current.Navigation.PopAsync();
@@ -138,4 +162,7 @@ public partial class DotbackRegistrationViewModel : ObservableObject
             await Shell.Current.DisplayAlertAsync("Error", ex.Message, "OK");
         }
     }
+
+    [RelayCommand]
+    private Task OpenEventDetailsPageAsync() => Shell.Current.Navigation.PushAsync(new EventDetailsPage(EventId));
 }

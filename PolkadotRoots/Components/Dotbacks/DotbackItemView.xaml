@@ -47,8 +47,7 @@
 
                 <AbsoluteLayout HeightRequest="60"
                          Grid.Column="1"
-                            Grid.ColumnSpan="1"
-                            x:Name="nftInfoLayout">
+                            Grid.ColumnSpan="1">
                     <Label Margin="5, 2.5, 5, 5"
                                AbsoluteLayout.LayoutBounds="0.5, 0, 1, 30"
                                AbsoluteLayout.LayoutFlags="PositionProportional,WidthProportional"

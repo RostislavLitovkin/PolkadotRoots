@@ -8,8 +8,7 @@
              Title="{Binding Title}"
              BackgroundColor="{AppThemeBinding Light=#ffffff, Dark=#0f0f12}">
     <VerticalStackLayout Padding="18" Spacing="16">
-        <Label Text="Organizer" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" />
-        <Label Text="Organizator addresses" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" />
+        <Label Text="Organizers" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" />
         <form:FormMultiAddressInputView Addresses="{Binding OrganisatorAddresses, Mode=TwoWay}" />
 
         <Label Text="Name" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" />

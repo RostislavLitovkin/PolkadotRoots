@@ -3,8 +3,8 @@ using CommunityCore.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PlutoFramework.Components.Loading;
+using PolkadotRoots.Helpers;
 using System.Collections.ObjectModel;
-using System.Windows.Input;
 
 namespace PolkadotRoots.Pages;
 
@@ -12,7 +12,6 @@ public sealed class EventListItem
 {
     public string? ImageSource { get; init; }
     public string Title { get; init; } = "Untitled event";
-    public string Subtitle { get; init; } = string.Empty;
     public string StartText { get; init; } = string.Empty;
     public string EndText { get; init; } = string.Empty;
     public string Location { get; init; } = string.Empty;
@@ -48,7 +47,7 @@ public partial class EventsViewModel : ObservableObject
         loading.IsVisible = true;
         try
         {
-            long? id = null; 
+            long? id = null;
             switch (param)
             {
                 case long l: id = l; break;
@@ -127,80 +126,19 @@ public partial class EventsViewModel : ObservableObject
         string title = FirstNonEmpty(ev.Name) ?? "Untitled event";
         string venue = FirstNonEmpty(ev.Address, ev.Country) ?? string.Empty;
 
-        var (startText, endText, subtitle) = FormatTimes(ev.TimeStart, ev.TimeEnd, venue);
+        var (startText, endText) = TimeDateHelper.FormatTimes(ev.TimeStart, ev.TimeEnd);
 
-        string? imageSrc = await ResolveImageAsync(ev);
+        string? imageSrc = await ImageHelper.ResolveImageAsync(ev);
 
         return new EventListItem
         {
             Id = ev.Id,
             Title = title,
-            Subtitle = subtitle,
             StartText = startText,
             EndText = endText,
             Location = venue,
             ImageSource = imageSrc
         };
-    }
-
-    private static (string start, string end, string subtitle) FormatTimes(long? start, long? end, string venue)
-    {
-        DateTimeOffset? s = FromUnixMaybe(start);
-        DateTimeOffset? e = FromUnixMaybe(end);
-
-        string startText = s.HasValue ? s.Value.ToLocalTime().ToString("ddd, MMM d � HH:mm") : "TBA";
-        string endText = e.HasValue ? e.Value.ToLocalTime().ToString("ddd, MMM d � HH:mm") : "TBA";
-
-        string subtitle;
-        if (s.HasValue && e.HasValue)
-        {
-            bool sameDay = s.Value.Date == e.Value.Date;
-            if (sameDay)
-                subtitle = $"{s.Value.ToLocalTime():ddd, MMM d � HH:mm} � {e.Value.ToLocalTime():HH:mm}";
-            else
-                subtitle = $"{s.Value.ToLocalTime():ddd, MMM d � HH:mm} � {e.Value.ToLocalTime():ddd, MMM d � HH:mm}";
-        }
-        else if (s.HasValue)
-            subtitle = s.Value.ToLocalTime().ToString("ddd, MMM d � HH:mm");
-        else
-            subtitle = "Date to be announced";
-
-        if (!string.IsNullOrWhiteSpace(venue))
-            subtitle = string.IsNullOrWhiteSpace(subtitle) ? venue : $"{subtitle} � {venue}";
-
-        return (startText, endText, subtitle);
-    }
-
-    private static DateTimeOffset? FromUnixMaybe(long? val)
-    {
-        if (val is null) return null;
-        try
-        {
-            var v = val.Value;
-            // seconds vs millis
-            if (v < 1_000_000_000_000) v *= 1000;
-            return DateTimeOffset.FromUnixTimeMilliseconds(v);
-        }
-        catch { return null; }
-    }
-
-    private async Task<string?> ResolveImageAsync(EventDto ev)
-    {
-        if (string.IsNullOrWhiteSpace(ev.Image))
-        {
-            return null;
-
-        }
-
-        try
-        {
-            var url = await storage.GetImageAsync(ev.Image);
-            if (!string.IsNullOrWhiteSpace(url)) return url;
-        }
-        catch { /* ignore */ }
-
-        return null;
-
     }
 
     private static string? FirstNonEmpty(params string?[] values)

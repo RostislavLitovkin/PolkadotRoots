@@ -1,26 +1,19 @@
-using CommunityCore.Events;
-using CommunityCore.Interest;
-using CommunityCore.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PlutoFramework.Model;
+using PolkadotRoots.Helpers;
 using Substrate.NetApi;
 using System.Collections.ObjectModel;
-using CommunityCore.Admins;
+using PlutoFramework.Components.WebView;
 
 namespace PolkadotRoots.Pages;
 
 public partial class EventDetailsViewModel : ObservableObject
 {
-    private readonly CommunityEventsApiClient api;
-    private readonly StorageApiClient storage;
-    private readonly CommunityInterestApiClient interestApi;
-    private readonly CommunityAdminsApiClient adminsApi;
     private readonly long id;
 
     [ObservableProperty] private string title = string.Empty;
-    [ObservableProperty] private string subtitle = string.Empty;
-    [ObservableProperty] private string bannerImage;
+    [ObservableProperty] private string? bannerImage;
     [ObservableProperty] private string description = string.Empty;
     [ObservableProperty] private string startText = string.Empty;
     [ObservableProperty] private string endText = string.Empty;
@@ -80,7 +73,7 @@ public partial class EventDetailsViewModel : ObservableObject
 
         try
         {
-            var response = await interestApi.RegisterAsync(account, id, timestamp);
+            var response = await CommunityClientHelper.InterestApi.RegisterAsync(account, id, timestamp);
 
             IsInterested = true;
 
@@ -129,7 +122,7 @@ public partial class EventDetailsViewModel : ObservableObject
             if (account is null)
                 return;
 
-            var ok = await api.DeleteAsync(account, id);
+            var ok = await CommunityClientHelper.EventsApi.DeleteAsync(account, id);
             if (ok)
             {
                 await Shell.Current.DisplayAlertAsync("Deleted", "Event has been deleted.", "OK");
@@ -146,12 +139,8 @@ public partial class EventDetailsViewModel : ObservableObject
         }
     }
 
-    public EventDetailsViewModel(CommunityEventsApiClient api, StorageApiClient storage, CommunityInterestApiClient interestApi, CommunityAdminsApiClient adminsApi, long id)
+    public EventDetailsViewModel(long id)
     {
-        this.api = api;
-        this.storage = storage;
-        this.interestApi = interestApi;
-        this.adminsApi = adminsApi;
         this.id = id;
     }
 
@@ -159,7 +148,7 @@ public partial class EventDetailsViewModel : ObservableObject
     private async Task OpenUrlAsync(string? url)
     {
         if (string.IsNullOrWhiteSpace(url)) return;
-        await Launcher.Default.OpenAsync(new Uri(url));
+        await Shell.Current.Navigation.PushAsync(new ExtensionWebViewPage(url));
     }
 
     [RelayCommand]
@@ -175,23 +164,21 @@ public partial class EventDetailsViewModel : ObservableObject
     {
         if (string.IsNullOrWhiteSpace(addr)) return;
         var url = $"https://assethub-polkadot.subscan.io/account/{Uri.EscapeDataString(addr)}";
-        await Launcher.Default.OpenAsync(new Uri(url));
+        await Shell.Current.Navigation.PushAsync(new ExtensionWebViewPage(url));
     }
-
     public async Task LoadAsync()
     {
-        var eventTask = api.GetAsync(id);
-        var interestTask = interestApi.ListAsync(id);
-        var adminsTask = adminsApi.GetAllAsync();
+        var eventTask = CommunityClientHelper.EventsApi.GetAsync(id);
+        var interestTask = CommunityClientHelper.InterestApi.ListAsync(id);
+        var adminsTask = CommunityClientHelper.AdminsApi.GetAllAsync();
 
         var ev = await eventTask;
         if (ev == null) return;
 
         Title = ev.Name ?? "Untitled event";
 
-        var (startText, endText, subtitle) = FormatTimes(ev.TimeStart, ev.TimeEnd,
-            FirstNonEmpty(ev.Address, ev.Country) ?? string.Empty);
-        StartText = startText; EndText = endText; Subtitle = subtitle;
+        var (startText, endText) = TimeDateHelper.FormatTimes(ev.TimeStart, ev.TimeEnd);
+        StartText = startText; EndText = endText;
 
         Description = ev.Description ?? string.Empty;
         AddressLine = FirstNonEmpty(ev.Address, ev.Country) ?? string.Empty;
@@ -203,14 +190,14 @@ public partial class EventDetailsViewModel : ObservableObject
         if (ev.OrganizatorAddresses != null)
             Organizers = new ObservableCollection<string>(ev.OrganizatorAddresses);
 
-        BannerImage = await storage.GetImageAsync(ev.Image!);
+        BannerImage = await CommunityClientHelper.StorageApi.GetImageAsync(ev.Image!);
 
-        var inter = await interestTask;
+        var interest = await interestTask;
 
-        Interested = inter?.Count ?? 0;
+        Interested = interest?.Count ?? 0;
 
         var address = KeysModel.GetSubstrateKey("");
-        IsInterested = inter?.Any(i => i.Address == address) ?? false;
+        IsInterested = interest?.Any(i => i.Address == address) ?? false;
 
         try
         {
@@ -221,47 +208,6 @@ public partial class EventDetailsViewModel : ObservableObject
         {
             IsAdmin = false;
         }
-    }
-
-    private static (string start, string end, string subtitle) FormatTimes(long? start, long? end, string venue)
-    {
-        DateTimeOffset? s = FromUnixMaybe(start);
-        DateTimeOffset? e = FromUnixMaybe(end);
-
-        string startText = s.HasValue ? s.Value.ToLocalTime().ToString("ddd, MMM d � HH:mm") : "TBA";
-        string endText = e.HasValue ? e.Value.ToLocalTime().ToString("ddd, MMM d � HH:mm") : "TBA";
-
-        string subtitle;
-        if (s.HasValue && e.HasValue)
-        {
-            bool sameDay = s.Value.Date == e.Value.Date;
-            if (sameDay)
-                subtitle = $"{s.Value.ToLocalTime():ddd, MMM d � HH:mm} � {e.Value.ToLocalTime():HH:mm}";
-            else
-                subtitle = $"{s.Value.ToLocalTime():ddd, MMM d � HH:mm} � {e.Value.ToLocalTime():ddd, MMM d � HH:mm}";
-        }
-        else if (s.HasValue)
-            subtitle = s.Value.ToLocalTime().ToString("ddd, MMM d � HH:mm");
-        else
-            subtitle = "Date to be announced";
-
-        if (!string.IsNullOrWhiteSpace(venue))
-            subtitle = string.IsNullOrWhiteSpace(subtitle) ? venue : $"{subtitle} � {venue}";
-
-        return (startText, endText, subtitle);
-    }
-
-    private static DateTimeOffset? FromUnixMaybe(long? val)
-    {
-        if (val is null) return null;
-        try
-        {
-            var v = val.Value;
-            // seconds vs millis
-            if (v < 1_000_000_000_000) v *= 1000;
-            return DateTimeOffset.FromUnixTimeMilliseconds(v);
-        }
-        catch { return null; }
     }
 
     private static string? FirstNonEmpty(params string?[] values)

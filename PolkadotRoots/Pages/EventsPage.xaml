@@ -65,10 +65,9 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <eventsui:EventItemView
-                            Padding="20,5,20,10"
+                            Margin="20,5,20,10"
                             ImageSource="{Binding ImageSource}"
                             Title="{Binding Title}"
-                            Subtitle="{Binding Subtitle}"
                             StartText="{Binding StartText}"
                             EndText="{Binding EndText}"
                             Location="{Binding Location}"

@@ -7,11 +7,11 @@
              x:Name="self"
              HorizontalOptions="Fill">
     <card:ClickableCard CardPadding="0, 0, 0, 0">
-    <card:ClickableCard.GestureRecognizers>
-      <TapGestureRecognizer Command="{Binding Source={x:Reference self}, Path=Command}"
+        <card:ClickableCard.GestureRecognizers>
+            <TapGestureRecognizer Command="{Binding Source={x:Reference self}, Path=Command}"
                             CommandParameter="{Binding Source={x:Reference self}, Path=CommandParameter}" />
-    </card:ClickableCard.GestureRecognizers>
-    <card:ClickableCard.View>
+        </card:ClickableCard.GestureRecognizers>
+        <card:ClickableCard.View>
             <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*">
                 <!-- Banner -->
                 <Grid HeightRequest="200">
@@ -26,7 +26,7 @@
                            FontSize="20"
                            TextColor="{AppThemeBinding Light=#0f0f12, Dark=#f6f6f8}"/>
 
-                  <Label Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding Source={x:Reference self}, Path=Location}" FontSize="12" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
+                    <Label Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding Source={x:Reference self}, Path=Location}" FontSize="12" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
 
                 </VerticalStackLayout>
 
@@ -38,7 +38,6 @@
                     <Label Grid.Row="1" Grid.Column="1" Text="{Binding Source={x:Reference self}, Path=EndText}" FontSize="14" HorizontalTextAlignment="End" TextColor="{AppThemeBinding Light=#0f0f12, Dark=#f6f6f8}" />
                 </Grid>
             </Grid>
-        </card:ClickableCard.View >
-  </card:ClickableCard >
-
+        </card:ClickableCard.View>
+    </card:ClickableCard>
 </ContentView>

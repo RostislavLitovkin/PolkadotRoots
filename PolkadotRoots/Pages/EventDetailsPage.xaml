@@ -23,31 +23,32 @@
                      Title="{Binding Title}"
                      BackgroundColor="{AppThemeBinding Light=#ffffff, Dark=#0f0f12}"
                      Shell.PresentationMode="ModalNotAnimated">
-    <VerticalStackLayout Padding="18" x:Name="LayoutRoot"
+    <ScrollView>
+        <VerticalStackLayout Padding="18" x:Name="LayoutRoot"
                          Spacing="15">
 
-        <!-- Banner -->
-        <nft:NftImageView ImageSource="{Binding BannerImage}" />
+            <!-- Banner -->
+            <nft:NftImageView ImageSource="{Binding BannerImage}" />
 
-        <Label Text="{Binding InterestedText}" LineBreakMode="WordWrap"
+            <Label Text="{Binding InterestedText}" LineBreakMode="WordWrap"
                FontFamily="UnboundedBold"
                FontSize="20"/>
 
-        <buttons:ElevatedButton Text="Attend"
+            <buttons:ElevatedButton Text="Attend"
                                 ButtonState="Enabled"
                                 IsVisible="{Binding InterestButtonIsVisible}" 
                                 Command="{Binding InterestCommand}" />
 
-        <Border StrokeThickness="1"
+            <Border StrokeThickness="1"
                 HeightRequest="{StaticResource ButtonHeight}"
                 Stroke="{StaticResource Primary}"
                 IsVisible="{Binding IsInterested}">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
 
-                <Label Text="Interested"
+                    <Label Text="Interested"
                        FontFamily="UnboundedBold"
                        TextColor="{StaticResource Primary}"
                        Margin="0, 0, 0, 0"
@@ -57,97 +58,98 @@
                        HorizontalOptions="Center"
                        HorizontalTextAlignment="Center"
                        FontSize="18"/>
-            </Grid>
-            <Border.StrokeShape>
-                <RoundRectangle CornerRadius="{StaticResource ButtonCornerRadius}"
+                </Grid>
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="{StaticResource ButtonCornerRadius}"
                         x:Name="roundRectangle"/>
 
-            </Border.StrokeShape>
-        </Border>
+                </Border.StrokeShape>
+            </Border>
 
-        <buttons:ElevatedButton Text="Submit DOT-back"
+            <buttons:ElevatedButton Text="Submit DOT-back"
                         ButtonState="Enabled"
                         Command="{Binding DotbackCommand}" />
 
-        <buttons:ElevatedButton Text="Manage DOT-backs"
+            <buttons:ElevatedButton Text="Manage DOT-backs"
                                 ButtonState="Enabled"
                                 IsVisible="{Binding IsOrganizer}"
                                 Command="{Binding ManageDotbacksCommand}" />
 
-        <buttons:ElevatedButton Text="Edit event details"
+            <buttons:ElevatedButton Text="Edit event details"
                         ButtonState="Enabled"
                         IsVisible="{Binding IsOrganizer}"
                         Command="{Binding EditEventCommand}" />
 
-        <buttons:ElevatedButton Text="Delete event"
+            <buttons:ElevatedButton Text="Delete event"
                                 ButtonState="Enabled"
                                 IsVisible="{Binding IsOrganizerOrAdmin}"
                                 Command="{Binding DeleteEventCommand}" />
 
-        <!-- About -->
-        <VerticalStackLayout>
-            <Label Text="About" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" />
-            <Label Text="{Binding Description}" LineBreakMode="WordWrap" />
-        </VerticalStackLayout>
+            <!-- About -->
+            <VerticalStackLayout>
+                <Label Text="About" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" />
+                <Label Text="{Binding Description}" LineBreakMode="WordWrap" />
+            </VerticalStackLayout>
 
-        <!-- Details section -->
-        <card:Card>
-            <card:Card.View>
-                <VerticalStackLayout Grid.Row="1" Spacing="10" Padding="0,15,0,15">
-                    <Label Text="Details" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" />
-                    <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" ColumnSpacing="10" RowSpacing="8">
-                        <Label Grid.Row="0" Grid.Column="0" Text="Start:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
-                        <Label Grid.Row="0" Grid.Column="1" Text="{Binding StartText}" />
+            <!-- Details section -->
+            <card:Card>
+                <card:Card.View>
+                    <VerticalStackLayout Grid.Row="1" Spacing="10" Padding="0,15,0,15">
+                        <Label Text="Details" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" />
+                        <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" ColumnSpacing="10" RowSpacing="8">
+                            <Label Grid.Row="0" Grid.Column="0" Text="Start:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
+                            <Label Grid.Row="0" Grid.Column="1" Text="{Binding StartText}" />
 
-                        <Label Grid.Row="1" Grid.Column="0" Text="End:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
-                        <Label Grid.Row="1" Grid.Column="1" Text="{Binding EndText}" />
+                            <Label Grid.Row="1" Grid.Column="0" Text="End:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
+                            <Label Grid.Row="1" Grid.Column="1" Text="{Binding EndText}" />
 
-                        <Label Grid.Row="2" Grid.Column="0" Text="Address:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
-                        <Label Grid.Row="2" Grid.Column="1" Text="{Binding AddressLine}" />
+                            <Label Grid.Row="2" Grid.Column="0" Text="Address:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
+                            <Label Grid.Row="2" Grid.Column="1" Text="{Binding AddressLine}" />
 
-                        <Label Grid.Row="3" Grid.Column="0" Text="Price:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
-                        <Label Grid.Row="3" Grid.Column="1" Text="{Binding PriceText}" />
+                            <Label Grid.Row="3" Grid.Column="0" Text="Price:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
+                            <Label Grid.Row="3" Grid.Column="1" Text="{Binding PriceText}" />
 
-                        <Label Grid.Row="4" Grid.Column="0" Text="Luma:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
-                        <Label Grid.Row="4" Grid.Column="1"
+                            <Label Grid.Row="4" Grid.Column="0" Text="Luma:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
+                            <Label Grid.Row="4" Grid.Column="1"
                                    Text="{Binding LumaUrl}">
-                            <Label.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding OpenUrlCommand}" CommandParameter="{Binding LumaUrl}" />
-                            </Label.GestureRecognizers>
-                        </Label>
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding OpenUrlCommand}" CommandParameter="{Binding LumaUrl}" />
+                                </Label.GestureRecognizers>
+                            </Label>
 
-                        <Label Grid.Row="5" Grid.Column="0" Text="Website:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
-                        <Label Grid.Row="5" Grid.Column="1" Text="{Binding Website}">
-                            <Label.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding OpenUrlCommand}" CommandParameter="{Binding Website}" />
-                            </Label.GestureRecognizers>
-                        </Label>
+                            <Label Grid.Row="5" Grid.Column="0" Text="Website:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
+                            <Label Grid.Row="5" Grid.Column="1" Text="{Binding Website}">
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding OpenUrlCommand}" CommandParameter="{Binding Website}" />
+                                </Label.GestureRecognizers>
+                            </Label>
 
-                        <Label Grid.Row="6" Grid.Column="0" Text="Capacity:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
-                        <Label Grid.Row="6" Grid.Column="1" Text="{Binding CapacityText}" />
-                    </Grid>
-                </VerticalStackLayout>
-            </card:Card.View>
-        </card:Card>
+                            <Label Grid.Row="6" Grid.Column="0" Text="Capacity:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
+                            <Label Grid.Row="6" Grid.Column="1" Text="{Binding CapacityText}" />
+                        </Grid>
+                    </VerticalStackLayout>
+                </card:Card.View>
+            </card:Card>
 
-        <!-- Organizers section -->
-        <Label Text="Organizers" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" />
-        
-        <CollectionView ItemsSource="{Binding OrganizersPolkadotFormatted}" SelectionMode="None">
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <addressview:SubscanAddressView Title="Address: "
-                                                                Address="{Binding .}"
-                                                                AddressText="{Binding .}"/>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+            <!-- Organizers section -->
+            <Label Text="Organizers" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" />
 
-        <!-- Maps link -->
-        <HorizontalStackLayout Grid.Row="3" Spacing="12" Padding="0,12,0,0">
+            <CollectionView ItemsSource="{Binding OrganizersPolkadotFormatted}" SelectionMode="None">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <addressview:SubscanAddressView Title="Address: "
+                                                        Address="{Binding .}"
+                                                        AddressText="{Binding .}"/>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- Maps link -->
+            <HorizontalStackLayout Grid.Row="3" Spacing="12" Padding="0,12,0,0">
 
 
-            <buttons:ElevatedButton Text="Open in Google Maps" Command="{Binding OpenMapsCommand}" />
-        </HorizontalStackLayout>
-    </VerticalStackLayout>
+                <buttons:ElevatedButton Text="Open in Google Maps" Command="{Binding OpenMapsCommand}" />
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
 </page:PageTemplate>

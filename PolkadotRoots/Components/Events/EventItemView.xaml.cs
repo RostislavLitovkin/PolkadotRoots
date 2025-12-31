@@ -10,9 +10,6 @@ public partial class EventItemView : ContentView
     public static readonly BindableProperty TitleProperty = BindableProperty.Create(
         nameof(Title), typeof(string), typeof(EventItemView), default(string));
 
-    public static readonly BindableProperty SubtitleProperty = BindableProperty.Create(
-        nameof(Subtitle), typeof(string), typeof(EventItemView), default(string));
-
     public static readonly BindableProperty StartTextProperty = BindableProperty.Create(
         nameof(StartText), typeof(string), typeof(EventItemView), default(string));
 
@@ -38,12 +35,6 @@ public partial class EventItemView : ContentView
     {
         get => (string?)GetValue(TitleProperty);
         set => SetValue(TitleProperty, value);
-    }
-
-    public string? Subtitle
-    {
-        get => (string?)GetValue(SubtitleProperty);
-        set => SetValue(SubtitleProperty, value);
     }
 
     public string? StartText

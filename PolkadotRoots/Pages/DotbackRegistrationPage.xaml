@@ -5,19 +5,27 @@
                    xmlns:form="clr-namespace:PlutoFramework.Components.Form;assembly=PlutoFramework"
              xmlns:page="clr-namespace:PlutoFramework.Templates.PageTemplate;assembly=PlutoFramework"
              xmlns:buttons="clr-namespace:PlutoFramework.Components.Buttons;assembly=PlutoFramework"
+                   xmlns:events="clr-namespace:PolkadotRoots.Components.Events;assembly=PolkadotRoots"
+                   xmlns:address="clr-namespace:PlutoFramework.Components.AddressView;assembly=PlutoFramework"
              Title="{Binding Title}"
              BackgroundColor="{AppThemeBinding Light=#ffffff, Dark=#0f0f12}">
     <ScrollView>
         <VerticalStackLayout Padding="18" Spacing="16">
-            <Label Text="Event" FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" />
-            <Label Text="{Binding EventName}" FontFamily="UnboundedBold" FontSize="20"/>
-
             <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto" ColumnSpacing="10" RowSpacing="8">
-                <Label Grid.Row="0" Grid.Column="0" Text="Event ID:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
-                <Label Grid.Row="0" Grid.Column="1" Text="{Binding EventId}" />
+                <events:EventLittleItemView Title="{Binding EventTitle}"
+                            ImageSource="{Binding EventImageUrl}"
+                            StartDate="{Binding EventStartDate}"
+                            Command="{Binding OpenEventDetailsPageCommand}"
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"/>
 
-                <Label Grid.Row="1" Grid.Column="0" Text="Your Address:" TextColor="{AppThemeBinding Light=#6b7280, Dark=#b8b9c1}" />
-                <Label Grid.Row="1" Grid.Column="1" Text="{Binding Address}" LineBreakMode="TailTruncation"/>
+                <address:SubscanAddressView Title="Your address:"
+                            Address="{Binding Address}"
+                            AddressText="{Binding Address}"
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2" />
             </Grid>
 
             <!-- Conversion info -->
@@ -30,6 +38,8 @@
             <form:FormInputView Placeholder="Enter requested amount"
                                 KeyboardType="Numeric"
                                 Text="{Binding Amount}" />
+
+            <Label Text="Note: if you enter a higher amount than what is on the receipt, your DOT-back will get rejected." FontSize="14" TextColor="{AppThemeBinding Light=#9ca3af, Dark=#d1d5db}" />
 
             <form:FormImageUploadView Title="Upload receipt"
                                       ImageStream="{Binding ImageStream}" />

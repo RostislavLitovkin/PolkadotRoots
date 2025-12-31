@@ -12,14 +12,15 @@ namespace PolkadotRoots.Components
         string code = "";
 
         [RelayCommand]
-        public async Task OnButtonPressedAsync() {
+        public async Task OnButtonPressedAsync()
+        {
             if (string.IsNullOrWhiteSpace(Code))
             {
                 return;
             }
 
             var uri = $"https://dotmemo.xyz/claim/{Code}?address={Utils.GetAddressFrom(KeysModel.GetPublicKeyBytes(), 0)}";
-            await Browser.Default.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
+            await Shell.Current.Navigation.PushAsync(new ExtensionWebViewPage(uri));
         }
     }
 }

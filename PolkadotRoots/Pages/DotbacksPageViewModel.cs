@@ -1,7 +1,7 @@
 using CommunityCore.Dotback;
-using CommunityCore.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using PolkadotRoots.Helpers;
 using Substrate.NetApi;
 using System.Collections.ObjectModel;
 
@@ -21,8 +21,6 @@ public sealed class DotbackListItem
 
 public partial class DotbacksViewModel : ObservableObject
 {
-    private readonly CommunityDotbacksApiClient api;
-    private readonly StorageApiClient storage;
     private readonly long? eventFilter;
 
     private int pageIndex = 0; // simulated paging over entire list for now
@@ -54,10 +52,8 @@ public partial class DotbacksViewModel : ObservableObject
         catch { }
     }
 
-    public DotbacksViewModel(CommunityDotbacksApiClient api, StorageApiClient storage, long? eventId, string? title)
+    public DotbacksViewModel(long? eventId, string? title)
     {
-        this.api = api;
-        this.storage = storage;
         this.eventFilter = eventId;
         if (!string.IsNullOrWhiteSpace(title)) Title = title!;
     }
@@ -70,8 +66,8 @@ public partial class DotbacksViewModel : ObservableObject
         {
             // API has no paging, so fetch per event/address; implement simple paging in client
             IReadOnlyList<DotbackDto> list = eventFilter is long eid
-                ? await api.ListByEventAsync(eid)
-                : await api.ListByAddressAsync(""); // not supported; fallback in UI would be event-only usage
+                ? await CommunityClientHelper.DotbacksApi.ListByEventAsync(eid)
+                : await CommunityClientHelper.DotbacksApi.ListByAddressAsync(""); // not supported; fallback in UI would be event-only usage
 
             var chunk = list.Skip(pageIndex * 20).Take(20).ToList();
             if (chunk.Count == 0)
@@ -109,7 +105,7 @@ public partial class DotbacksViewModel : ObservableObject
             {
                 Console.WriteLine("Image source: ");
                 Console.WriteLine(d.ImageUrl);
-                imageSrc = await storage.GetImageAsync(d.ImageUrl);
+                imageSrc = await CommunityClientHelper.StorageApi.GetImageAsync(d.ImageUrl);
                 Console.WriteLine(imageSrc);
 
             }

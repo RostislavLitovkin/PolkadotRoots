@@ -105,6 +105,9 @@
     <MauiXaml Update="Components\Events\EventItemView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
+    <MauiXaml Update="Components\Events\EventLittleItemView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
     <MauiXaml Update="Components\PlayWudButtonView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>

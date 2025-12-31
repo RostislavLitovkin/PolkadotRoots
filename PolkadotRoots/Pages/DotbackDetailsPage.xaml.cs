@@ -1,6 +1,4 @@
-using CommunityCore;
 using CommunityCore.Dotback;
-using CommunityCore.Storage;
 using Hydration.NetApi.Generated;
 using PlutoFramework.Model;
 using PlutoFramework.Model.HydraDX;
@@ -10,23 +8,17 @@ namespace PolkadotRoots.Pages;
 
 public partial class DotbackDetailsPage : PageTemplate
 {
-    private readonly DotbackDetailsViewModel vm;
-
     public DotbackDetailsPage(DotbackDto dto)
     {
         InitializeComponent();
-
-        var storage = new StorageApiClient(new HttpClient(), new CommunityApiOptions());
-        var dotbacksApi = new CommunityDotbacksApiClient(new HttpClient(), new CommunityApiOptions());
-        vm = new DotbackDetailsViewModel(dto, storage, dotbacksApi);
-        BindingContext = vm;
+        BindingContext = new DotbackDetailsViewModel(dto);
     }
 
-    protected override async void OnAppearing()
+    protected override void OnAppearing()
     {
         base.OnAppearing();
 
-        await AppearingAsync();
+        _ = AppearingAsync();
     }
 
     private async Task AppearingAsync()
@@ -37,7 +29,6 @@ public partial class DotbackDetailsPage : PageTemplate
             await Sdk.GetAssetsAsync((SubstrateClientExt)client.SubstrateClient, null, CancellationToken.None);
         }
 
-        await vm.LoadAsync();
-
+        await ((DotbackDetailsViewModel)BindingContext).LoadAsync();
     }
 }
