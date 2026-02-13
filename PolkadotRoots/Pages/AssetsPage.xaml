@@ -68,7 +68,7 @@
             AbsoluteLayout.LayoutBounds="1, 0, AutoSize, AutoSize"
             AbsoluteLayout.LayoutFlags="PositionProportional"
             Source="{AppThemeBinding Light=qrcodeblack.png, Dark=qrcodewhite.png}"
-            >
+            AutomationId="QrButton">
 
             <Image.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding QrCommand}" />
@@ -80,7 +80,7 @@
            AbsoluteLayout.LayoutBounds="0, 0, AutoSize, AutoSize"
             AbsoluteLayout.LayoutFlags="PositionProportional"
             Source="{AppThemeBinding Light=settingsblack.png, Dark=settingswhite.png}"
-           >
+           AutomationId="Settings">
             <Image.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding SettingsCommand}" />
 

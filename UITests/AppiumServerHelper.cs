@@ -26,7 +26,7 @@ public static class AppiumServerHelper
             .WithIPAddress(host)
             .UsingPort(port)
             .WithAppiumJS(new FileInfo(appiumJsPath))
-            .WithStartUpTimeOut(TimeSpan.FromSeconds(20));
+            .WithStartUpTimeOut(startupTimeout ?? TimeSpan.FromSeconds(20));
 
         // Base path customization not supported via current AppiumServiceBuilder API in this project version.
         // If needed, configure the client to use the default base path.

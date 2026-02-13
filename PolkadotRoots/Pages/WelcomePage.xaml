@@ -64,6 +64,9 @@
                                 AbsoluteLayout.LayoutFlags="PositionProportional,WidthProportional"
                                 Margin="20"
                                 Text="Join"
+                                AutomationId="JoinButton"
+                                SemanticProperties.Description="JoinButton"
+                                SemanticProperties.Hint="Join"
                                 Command="{Binding JoinCommand}" />
     </AbsoluteLayout>
 </ContentPage>

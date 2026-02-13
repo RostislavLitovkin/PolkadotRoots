@@ -1,6 +1,4 @@
-﻿using NUnit.Framework;
-
-using OpenQA.Selenium.Appium;
+﻿using OpenQA.Selenium.Appium;
 using OpenQA.Selenium.Appium.Android;
 using OpenQA.Selenium.Appium.Enums;
 using System.Diagnostics.CodeAnalysis;
@@ -43,10 +41,10 @@ public class AppiumSetup
         // Release builds have Fast Deployment disabled
         // https://learn.microsoft.com/xamarin/android/deploy-test/building-apps/build-process#fast-deployment
         androidOptions.AddAdditionalAppiumOption(MobileCapabilityType.NoReset, "true");
-        androidOptions.AddAdditionalAppiumOption(AndroidMobileCapabilityType.AppPackage, "app.plutolabs.polkadotcommunity");
+        androidOptions.AddAdditionalAppiumOption(AndroidMobileCapabilityType.AppPackage, BaseTest.PackageName);
 
         // Ensure MainActivity is registered with explicit name via [Activity(Name = "app.plutolabs.polkadotcommunity.MainActivity", MainLauncher = true, ...)]
-        androidOptions.AddAdditionalAppiumOption(AndroidMobileCapabilityType.AppActivity, "app.plutolabs.polkadotcommunity.MainActivity");
+        androidOptions.AddAdditionalAppiumOption(AndroidMobileCapabilityType.AppActivity, $"{BaseTest.PackageName}.MainActivity");
         // Be tolerant about intermediate activities during MAUI startup
         androidOptions.AddAdditionalAppiumOption("appWaitActivity", ".*");
         // Auto grant runtime permissions on first run

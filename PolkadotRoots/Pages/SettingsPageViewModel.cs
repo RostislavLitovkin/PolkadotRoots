@@ -8,6 +8,7 @@ using PlutoFramework.Components.Password;
 using PlutoFramework.Components.Settings;
 using PlutoFramework.Model;
 using PlutoFramework.Model.SQLite;
+using System.Threading.Tasks;
 
 namespace PolkadotRoots.Pages
 {
@@ -18,6 +19,12 @@ namespace PolkadotRoots.Pages
         public SettingsPageViewModel()
         {
             hasAccount = KeysModel.HasSubstrateKey();
+        }
+
+        [RelayCommand]
+        public async Task ImportWalletAsync()
+        {
+            await Shell.Current.Navigation.PushAsync(new EnterMnemonicsPage(new EnterMnemonicsViewModel()));
         }
 
         [RelayCommand]

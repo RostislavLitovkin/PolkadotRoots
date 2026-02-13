@@ -16,6 +16,7 @@
         <local:NavBarButtonView
             Grid.Column="0"
             Title="Assets"
+            AutomationId="AssetsNavButton"
             IconUnselected="assets.png"
             IconSelected="assets_active.png"
             IsSelected="{Binding AssetsIsSelected}"
