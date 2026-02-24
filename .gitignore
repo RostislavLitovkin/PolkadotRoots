@@ -1,5 +1,6 @@
 appsettings.json
 PolkadotRoots/Platforms/Android/google-services.json
+PolkadotRoots/GoogleService-Info.plist
 
 .vs
 

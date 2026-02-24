@@ -51,6 +51,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <BundleResource Include="GoogleService-Info.plist" />
+    <BundleResource Include="Platforms\iOS\Entitlements.plist" />
+  </ItemGroup>
+
+  <ItemGroup>
     <!-- Splash Screen -->
     <MauiSplashScreen Include="Resources\Splash\splash.png" Color="#ff2670" BaseSize="128,128" />
 
