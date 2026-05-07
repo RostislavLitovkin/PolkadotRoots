@@ -72,7 +72,7 @@ public partial class DotbacksViewModel : ObservableObject
             var ev = await CommunityClientHelper.EventsApi.GetAsync(eid);
             if (ev?.OrganizatorAddresses == null || ev.OrganizatorAddresses.Count == 0) return;
 
-            var my = KeysModel.GetSubstrateKey("");
+            var my = KeysModel.GetSubstrateKey();
             IsOrganizer = !string.IsNullOrWhiteSpace(my) && ev.OrganizatorAddresses.Contains(my);
         }
         catch

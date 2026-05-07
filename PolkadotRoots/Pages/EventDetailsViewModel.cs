@@ -141,7 +141,7 @@ public partial class EventDetailsViewModel : ObservableObject
             return;
         }
 
-        var account = await KeysModel.GetAccountAsync("");
+        var account = await KeysModel.GetAccountAsync();
 
         if (account is null)
         {
@@ -360,7 +360,7 @@ public partial class EventDetailsViewModel : ObservableObject
 
         Interested = interest?.Count ?? 0;
 
-        var address = KeysModel.GetSubstrateKey("");
+        var address = KeysModel.GetSubstrateKey();
         IsInterested = interest?.Any(i => i.Address == address) ?? false;
 
         try

@@ -1,6 +1,4 @@
 ﻿using CommunityCore.Dotback;
-using CommunityCore.Events;
-using CommunityCore.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PlutoFramework.Components.Buttons;
@@ -89,14 +87,15 @@ public partial class DotbackRegistrationViewModel : ObservableObject
 
     public async Task InitAsync()
     {
-        Address = KeysModel.GetSubstrateKey("") ?? string.Empty;
+        Address = KeysModel.GetSubstrateKey() ?? string.Empty;
 
         try
         {
             (var currencySymbol, var isoCurrencySymbol, var exchangeRate) = await Helpers.CurrencyHelper.GetCurrencySymbolAndRateToUsdAsync(Country!);
             Currency = currencySymbol;
             UsdToLocalRate = exchangeRate;
-        } catch
+        }
+        catch
         {
         }
 

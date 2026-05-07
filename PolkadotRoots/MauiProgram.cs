@@ -32,7 +32,7 @@ namespace PolkadotRoots
             builder
                 .UseMauiApp<App>()
                 .UseMauiCommunityToolkit()
-                .UsePlutoFramework();
+                .UsePlutoFrameworkMinimal();
 
             builder.ConfigureMauiHandlers(handlers =>
             {

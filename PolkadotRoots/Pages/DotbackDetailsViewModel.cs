@@ -5,11 +5,11 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PlutoFramework.Components.Loading;
 using PlutoFramework.Components.TransactionAnalyzer;
+using PlutoFramework.Components.WebView;
 using PlutoFramework.Constants;
 using PlutoFramework.Model;
 using PlutoFramework.Model.HydraDX;
 using PolkadotRoots.Helpers;
-using PlutoFramework.Components.WebView;
 
 namespace PolkadotRoots.Pages;
 
@@ -259,7 +259,7 @@ public partial class DotbackDetailsViewModel : ObservableObject
     {
         try
         {
-            var admin = await KeysModel.GetAccountAsync("");
+            var admin = await KeysModel.GetAccountAsync();
             if (admin is null) return;
 
             var http = new HttpClient();

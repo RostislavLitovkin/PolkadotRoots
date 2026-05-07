@@ -1,25 +1,67 @@
-﻿using Microsoft.Maui.ApplicationModel;
-using PlutoFramework.Model;
-using PlutoFrameworkCore;
+﻿using PlutoFramework.Model;
 using PolkadotRoots.Components.BottomNavBar;
-using System.Linq;
 
 namespace PolkadotRoots
 {
     public partial class App : Application
     {
+        private bool _isInitialized;
+
         public App()
         {
-            NavigationModel.NavigateAfterAccountCreation = NewMainPageNavigationAsync;
-
             InitializeComponent();
 
-            DependencyService.Register<BottomNavBarViewModel>();
+            // Show a lightweight loading UI first.
+            MainPage = CreateLoadingPage();
+
+            // Defer heavy work until the first frame renders.
+            Dispatcher.Dispatch(async () => await InitializeAsync());
         }
 
         protected override Window CreateWindow(IActivationState? activationState)
         {
-            return new Window(CreateRootPage());
+            return new Window(MainPage ?? CreateLoadingPage());
+        }
+
+        private async Task InitializeAsync()
+        {
+            if (_isInitialized)
+            {
+                return;
+            }
+
+            _isInitialized = true;
+
+            // Let the first frame render before doing heavier setup.
+            await Task.Yield();
+
+            _ = Task.Run(PlutoFramework.MauiAppBuilderExtensions.InitializePlutoFrameworkFull);
+
+            NavigationModel.NavigateAfterAccountCreation = NewMainPageNavigationAsync;
+
+            DependencyService.Register<BottomNavBarViewModel>();
+
+            // Switch to the real root page after initialization.
+            await SetRootPageAsync(CreateRootPage());
+        }
+
+        private static Page CreateLoadingPage()
+        {
+            return new ContentPage
+            {
+                Content = new Grid
+                {
+                    Children =
+                    {
+                        new ActivityIndicator
+                        {
+                            IsRunning = true,
+                            HorizontalOptions = LayoutOptions.Center,
+                            VerticalOptions = LayoutOptions.Center,
+                        },
+                    },
+                },
+            };
         }
 
         public static Task NewMainPageNavigationAsync()
