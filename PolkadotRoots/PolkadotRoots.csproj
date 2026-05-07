@@ -9,7 +9,7 @@
 		<SingleProject>true</SingleProject>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-    <UseMauiEssentials>false</UseMauiEssentials>
+        <UseMauiEssentials>false</UseMauiEssentials>
 
 		<!-- Display name -->
 		<ApplicationTitle>Polkadot Community</ApplicationTitle>
@@ -68,7 +68,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Resources\Fonts\" />
+	    <Folder Include="Resources\Fonts\" />
 	</ItemGroup>
 
   <ItemGroup>

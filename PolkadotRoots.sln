@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
 VisualStudioVersion = 18.3.11222.16 d18.3
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlutoFrameworkCore", "plutoframework\PlutoFrameworkCore\PlutoFrameworkCore.csproj", "{4AF73E85-95F2-432E-99A3-006E5762A68F}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlutoFramework", "PlutoFramework\PlutoFramework\PlutoFramework.csproj", "{9FDC953E-9BAB-F54E-E986-128C15FAE91D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlutoFrameworkTests", "PlutoFramework\PlutoFrameworkTests\PlutoFrameworkTests.csproj", "{D6F04A0E-76E5-7238-CFA2-EFAE1B123301}"
