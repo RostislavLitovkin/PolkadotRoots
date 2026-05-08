@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net10.0-android<!--;net10.0-ios26.0--></TargetFrameworks>
+    <TargetFrameworks>net10.0-android;net10.0-ios</TargetFrameworks>
 
 		<OutputType>Exe</OutputType>
 		<RootNamespace>PolkadotRoots</RootNamespace>
@@ -18,8 +18,8 @@
 		<ApplicationId>app.plutolabs.community</ApplicationId>
 
 		<!-- Versions -->
-		<ApplicationDisplayVersion>0.1</ApplicationDisplayVersion>
-		<ApplicationVersion>1</ApplicationVersion>
+		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+		<ApplicationVersion>2</ApplicationVersion>
 
 		<!-- To develop, package, and publish an app to the Microsoft Store, see: https://aka.ms/MauiTemplateUnpackaged -->
 		<WindowsPackageType>None</WindowsPackageType>
@@ -34,6 +34,11 @@
 
   <PropertyGroup>
     <MauiXamlInflator>SourceGen</MauiXamlInflator>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)'=='net10.0-ios'">
+    <CodesignKey>Apple Development: Created via API (XZ49N298Z7)</CodesignKey>
+    <CodesignProvision>VS: app.plutolabs.community Development</CodesignProvision>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)'=='net10.0-android'">

@@ -31,7 +31,7 @@ public class AppiumSetup
             // The full path to the .apk file
             // This only works with release builds because debug builds have fast deployment enabled
             // and Appium isn't compatible with fast deployment
-            // App = Path.Join(TestContext.CurrentContext.TestDirectory, "../../../../MauiApp/bin/Release/net8.0-android/app.plutolabs.polkadotcommunity-Signed.apk"),
+            // App = Path.Join(TestContext.CurrentContext.TestDirectory, "../../../../MauiApp/bin/Release/net8.0-android/app.plutolabs.community-Signed.apk"),
             // END RELEASE BUILD SETUP
         };
 
@@ -43,7 +43,7 @@ public class AppiumSetup
         androidOptions.AddAdditionalAppiumOption(MobileCapabilityType.NoReset, "true");
         androidOptions.AddAdditionalAppiumOption(AndroidMobileCapabilityType.AppPackage, BaseTest.PackageName);
 
-        // Ensure MainActivity is registered with explicit name via [Activity(Name = "app.plutolabs.polkadotcommunity.MainActivity", MainLauncher = true, ...)]
+        // Ensure MainActivity is registered with explicit name via [Activity(Name = "app.plutolabs.community.MainActivity", MainLauncher = true, ...)]
         androidOptions.AddAdditionalAppiumOption(AndroidMobileCapabilityType.AppActivity, $"{BaseTest.PackageName}.MainActivity");
         // Be tolerant about intermediate activities during MAUI startup
         androidOptions.AddAdditionalAppiumOption("appWaitActivity", ".*");

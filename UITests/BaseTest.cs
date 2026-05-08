@@ -9,7 +9,7 @@ namespace UITests;
 
 public abstract class BaseTest
 {
-    public const string PackageName = "app.plutolabs.polkadotcommunity";
+    public const string PackageName = "app.plutolabs.community";
     protected AppiumDriver App => AppiumSetup.App;
     private readonly TimeSpan _waitTimeout = TimeSpan.FromSeconds(20);
 

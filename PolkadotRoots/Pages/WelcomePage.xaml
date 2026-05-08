@@ -60,13 +60,26 @@
                AbsoluteLayout.LayoutFlags="PositionProportional"
                IsVisible="False" />
 
-        <buttons:ElevatedButton AbsoluteLayout.LayoutBounds="0.5, 1, 1, AutoSize"
-                                AbsoluteLayout.LayoutFlags="PositionProportional,WidthProportional"
-                                Margin="20"
-                                Text="Join"
-                                AutomationId="JoinButton"
-                                SemanticProperties.Description="JoinButton"
-                                SemanticProperties.Hint="Join"
-                                Command="{Binding JoinCommand}" />
+        <VerticalStackLayout Grid.Row="5"
+                             AbsoluteLayout.LayoutBounds="0.5, 1, 1, AutoSize"
+                             AbsoluteLayout.LayoutFlags="PositionProportional,WidthProportional"
+                             Padding="20, 10, 20, 15"
+                             Spacing="{StaticResource Gap}">
+
+            <buttons:ElevatedButton Text="Join"
+                                    ButtonState="Enabled"
+                                    AutomationId="JoinButton"
+                                    SemanticProperties.Description="JoinButton"
+                                    SemanticProperties.Hint="Join"
+                                    Command="{Binding JoinCommand}"/>
+            
+            <buttons:BasicGrayButton Text="Import Account"
+                                    ButtonState="Enabled"
+                                    AutomationId="ImportButton"
+                                    SemanticProperties.Description="ImportButton"
+                                    SemanticProperties.Hint="Import"
+                                    Command="{Binding ImportAccountCommand}" />
+        </VerticalStackLayout>
+
     </AbsoluteLayout>
 </ContentPage>

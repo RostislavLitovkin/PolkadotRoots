@@ -37,10 +37,10 @@
 	</array>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
-		<string>app.plutolabs.polkadotcommunity.plutonication</string>
+		<string>app.plutolabs.community.plutonication</string>
 	</array>
 	<key>CFBundleIdentifier</key>
-  <string>app.plutolabs.polkadotcommunity</string>
+  <string>app.plutolabs.community</string>
   <key>NSLocationWhenInUseUsageDescription</key>
   <string>Some features may require location access due to third-party services used by the app.</string>
 </dict>

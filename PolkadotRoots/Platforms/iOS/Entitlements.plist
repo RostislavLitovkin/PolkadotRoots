@@ -4,7 +4,7 @@
     <dict>
 		<key>keychain-access-groups</key>
 		<array>
-			<string>$(AppIdentifierPrefix)app.plutolabs.polkadotcommunity</string>
+			<string>$(AppIdentifierPrefix)app.plutolabs.community</string>
 		</array>
 
 		<!--

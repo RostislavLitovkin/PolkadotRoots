@@ -9,7 +9,7 @@ using PlutoFramework.Model;
 namespace PolkadotRoots.Platforms.Android
 {
     [Activity(
-        Name = "app.plutolabs.polkadotcommunity.MainActivity",
+        Name = "app.plutolabs.community.MainActivity",
         Theme = "@style/Maui.SplashTheme",
         MainLauncher = true,
         LaunchMode = LaunchMode.SingleTop,
